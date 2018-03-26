@@ -1,0 +1,1 @@
+# Geomatik Uygulamalar - Pafta Bulucu API
