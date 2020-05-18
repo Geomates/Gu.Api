@@ -20,6 +20,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Files", "Solution Files", "{9967E447-3FB4-461A-9A39-EB8E2CFC1D23}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		aws-lambda-tools-defaults.json = aws-lambda-tools-defaults.json
 		.github\workflows\deploy.yml = .github\workflows\deploy.yml
 		Readme.md = Readme.md
 		template.yml = template.yml
