@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace Gu.PaftaBulucu.WebApi
 {
@@ -19,7 +20,9 @@ namespace Gu.PaftaBulucu.WebApi
         // This method gets called by the runtime. Use this method to add services to the container
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();
+            services.AddCors();
+
+            services.AddControllers();
 
             // Add S3 to the ASP.NET Core dependency injection framework.
             services.AddAWSService<Amazon.S3.IAmazonS3>();
@@ -28,11 +31,28 @@ namespace Gu.PaftaBulucu.WebApi
             services.AddTransient<ISheetRepository, SheetRepository>();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseCors(p => p.AllowAnyOrigin().AllowCredentials().AllowAnyHeader());
-            app.UseMvc();
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseExceptionHandler("/error");
+            }
+
+            app.UseRouting();
+
+            app.UseCors(x => x
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader());
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
         }
     }
 }
