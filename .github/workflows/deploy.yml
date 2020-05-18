@@ -25,6 +25,10 @@ jobs:
       run: dotnet build --configuration Release --no-restore
     - name: Test
       run: dotnet test --no-restore --verbosity normal
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
     - name: Deploy Lambda Function
       run: ~/.dotnet/tools/dotnet-lambda deploy-serverless --aws-access-key-id ${AWS_ACCESS_KEY_ID} --aws-secret-key ${AWS_SECRET_ACCESS_KEY}
       env:
