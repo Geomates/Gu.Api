@@ -1,5 +1,7 @@
 using System.Linq;
 using Amazon;
+using Amazon.Runtime;
+using Amazon.Runtime.CredentialManagement;
 using Amazon.S3;
 using Gu.PaftaBulucu.Business.Services;
 using Gu.PaftaBulucu.Data.Respositories;
@@ -13,10 +15,7 @@ namespace Gu.PaftaBulucu.Business.Tests.Services
 
         public SheetServiceTest()
         {
-            _sheetRepository = new SheetRepository(new AmazonS3Client(new AmazonS3Config()
-                {
-                    RegionEndpoint = RegionEndpoint.EUWest1
-                }));
+            _sheetRepository = new SheetRepository(new AmazonS3Client());
         }
 
         [Theory]
