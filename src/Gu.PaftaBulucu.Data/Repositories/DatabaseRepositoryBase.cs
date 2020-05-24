@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gu.PaftaBulucu.Data.Repositories
 {
-    public abstract class DatabaseRepositoryBase<TEntity> : IAsyncDisposable, IDatabaseRepository<TEntity> where TEntity : class
+    public abstract class DatabaseRepositoryBase<TEntity> : IDisposable, IDatabaseRepository<TEntity> where TEntity : class
     {
         protected readonly DbContext Context;
 
@@ -66,10 +66,9 @@ namespace Gu.PaftaBulucu.Data.Repositories
             return await Context.SaveChangesAsync();
         }
 
-        public ValueTask DisposeAsync()
+        public void Dispose()
         {
             Context.Dispose();
-            return new ValueTask();
         }
     }
 }
