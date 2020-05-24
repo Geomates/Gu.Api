@@ -15,10 +15,7 @@ Resources:
                 Authorizers:
                   GuAuth0CustomAuthorizer:
                     FunctionArn: !GetAtt GuAuth0CustomAuthorizer.Arn
-            Cors:
-                AllowMethods: "'*'"
-                AllowHeaders: "'*'"
-                AllowOrigin: "'*'"
+            Cors: "'*'"
 
     GuAuth0CustomAuthorizer:
         Type: AWS::Serverless::Function
