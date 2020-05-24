@@ -1,4 +1,5 @@
 {
   "framework": "netcoreapp3.1",
-  "region": "eu-west-1"
+  "region": "eu-west-1",
+  "function-handler": "Gu.ApiGateway.CustomAuthorizer::Gu.ApiGateway.CustomAuthorizer.Function::FunctionHandlerAsync"
 }

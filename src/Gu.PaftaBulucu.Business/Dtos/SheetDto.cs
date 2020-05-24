@@ -1,6 +1,6 @@
-namespace Gu.PaftaBulucu.Business.Models
+namespace Gu.PaftaBulucu.Business.Dtos
 {
-    public class Sheet
+    public class SheetDto
     {
         public string Name { get; set; }
         public double Lat { get; set; }

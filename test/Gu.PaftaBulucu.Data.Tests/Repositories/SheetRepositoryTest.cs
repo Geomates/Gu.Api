@@ -1,6 +1,6 @@
 ﻿using Amazon;
 using Amazon.S3;
-using Gu.PaftaBulucu.Data.Respositories;
+using Gu.PaftaBulucu.Data.Repositories;
 using Xunit;
 
 namespace Gu.PaftaBulucu.Data.Tests.Repositories

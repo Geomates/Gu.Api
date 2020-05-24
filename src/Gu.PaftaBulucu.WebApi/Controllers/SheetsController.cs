@@ -1,4 +1,4 @@
-﻿using Gu.PaftaBulucu.Business.Models;
+﻿using Gu.PaftaBulucu.Business.Dtos;
 using Gu.PaftaBulucu.Business.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,7 +14,7 @@ namespace Gu.PaftaBulucu.WebApi.Controllers
         }
 
         [HttpGet("{scale}/{name}")]
-        public Sheet Get(int scale, string name)
+        public SheetDto Get(int scale, string name)
         {
             return _sheetService.GetSheetByName(name, scale);
         }

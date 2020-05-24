@@ -1,12 +1,12 @@
 using System.Collections.Generic;
-using Gu.PaftaBulucu.Data.Models;
-using Sheet = Gu.PaftaBulucu.Business.Models.Sheet;
+using Gu.PaftaBulucu.Business.Dtos;
 
 namespace Gu.PaftaBulucu.Business.Services
 {
     public interface ISheetService
     {
-        Sheet GetSheetByName(string name, int scale);
-        IEnumerable<Sheet> GetSheetsByCoordinate(double latitude, double longitude, int scale);
+        SheetDto GetSheetByName(string name, int scale);
+        IEnumerable<SheetDto> GetSheetsByCoordinate(double latitude, double longitude, int scale);
+        Dictionary<int,string> GetSheetParts(string sheetName);
     }
 }

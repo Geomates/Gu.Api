@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Gu.PaftaBulucu.Business.Dtos;
+using Gu.PaftaBulucu.Data.Repositories;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using Gu.PaftaBulucu.Business.Models;
-using Gu.PaftaBulucu.Data.Respositories;
 
 namespace Gu.PaftaBulucu.Business.Services
 {
@@ -28,7 +28,7 @@ namespace Gu.PaftaBulucu.Business.Services
             _sheetRepository = sheetRepository.SetS3BucketName("pafta.bulucu");
         }
 
-        public IEnumerable<Sheet> GetSheetsByCoordinate(double latitude, double longitude, int scale)
+        public IEnumerable<SheetDto> GetSheetsByCoordinate(double latitude, double longitude, int scale)
         {
             int lat = (int)(latitude * 36000000);
             int lon = (int)(longitude * 36000000);
@@ -72,24 +72,22 @@ namespace Gu.PaftaBulucu.Business.Services
             };
         }
 
-        public Sheet GetSheetByName(string name, int scale)
+        public SheetDto GetSheetByName(string name, int scale)
         {
-            var sheetNameRegex =
-                new Regex(@"^([a-zA-ZsçÇöÖşŞıİğĞüÜ]*?\-?[A-Z]\s[0-9]{2})\-?([abcd])?([1-4])?\-?([0-9]{1,2})?\-?([abcd])?\-?([1-4])?\-?([abcd])?");
-            var matchedSheetParts = sheetNameRegex.Match(name);
-            if (!matchedSheetParts.Success || matchedSheetParts.Groups.Count == _scaleRanges.Keys.ToList().IndexOf(scale) + 1)
+            var sheetParts = GetSheetParts(name);
+            if (sheetParts.Keys.Last() != scale)
             {
                 throw new ArgumentException("Sheet name is not valid format", nameof(name));
             }
 
-            var sheet100 = _sheetRepository.FindByName(matchedSheetParts.Groups[1].Value);
+            var sheet100 = _sheetRepository.FindByName(sheetParts[100]);
 
             if (sheet100 == null)
             {
                 throw new KeyNotFoundException("Sheet not found!");
             }
 
-            var result = new Sheet
+            var result = new SheetDto
             {
                 Lat = sheet100.Lat,
                 Lon = sheet100.Lon,
@@ -97,44 +95,34 @@ namespace Gu.PaftaBulucu.Business.Services
                 Scale = scale
             };
 
-            int scaleIndex = 0;
-
-            foreach (var scaleRange in _scaleRanges.Where(s => s.Key < 100))
+            foreach (var sheetPart in sheetParts)
             {
-                if (scaleRange.Key < scale)
-                {
-                    break;
-                }
-
-                var part = matchedSheetParts.Groups[scaleIndex++ + 2].Value;
-                int index;
-
-                switch (scaleRange.Key)
+                switch (sheetPart.Key)
                 {
                     case 50: //1:50.000
                     case 25 when scale == 25: //1:25.000
                     case 5: //1:5.000
                     case 2: //1:2.000
                     case 1: //1:1.000
-                        if (!int.TryParse(part, out index))
+                        if (!int.TryParse(sheetPart.Value, out int index))
                         {
-                            index = part[0] - 96;
+                            index = sheetPart.Value[0] - 96;
                         }
                         if (index < 3)
                         {
-                            result.Lat += scaleRange.Value;
+                            result.Lat += _scaleRanges[sheetPart.Key];
                         }
                         if (index == 2 || index == 3)
                         {
-                            result.Lon += scaleRange.Value;
+                            result.Lon += _scaleRanges[sheetPart.Key];
                         }
                         break;
                     case 10: //1:10.000
-                        int.TryParse(part, out index);
-                        var x = index % 5 == 0 ? 4 : index % 5 - 1;
-                        var y = 4 - index / 5 + (index % 5 == 0 ? 1 : 0);
-                        result.Lat += y * scaleRange.Value;
-                        result.Lon += x * scaleRange.Value;
+                        int.TryParse(sheetPart.Value, out int index10);
+                        var x = index10 % 5 == 0 ? 4 : index10 % 5 - 1;
+                        var y = 4 - index10 / 5 + (index10 % 5 == 0 ? 1 : 0);
+                        result.Lat += y * _scaleRanges[sheetPart.Key];
+                        result.Lon += x * _scaleRanges[sheetPart.Key];
                         break;
                 }
             }
@@ -145,9 +133,9 @@ namespace Gu.PaftaBulucu.Business.Services
         }
 
 
-        private Sheet AggregateSheets(int lat, int lon, int scale)
+        private SheetDto AggregateSheets(int lat, int lon, int scale)
         {
-            var result = new Sheet
+            var result = new SheetDto
             {
                 Scale = scale
             };
@@ -167,6 +155,27 @@ namespace Gu.PaftaBulucu.Business.Services
             result.Name = nameBuilder.ToString();
             result.Lat /= 36000000;
             result.Lon /= 36000000;
+            return result;
+        }
+
+        public Dictionary<int, string> GetSheetParts(string sheetName)
+        {
+            var sheetNameRegex =
+                new Regex(@"^([a-zA-ZsçÇöÖşŞıİğĞüÜ]*?\-?[A-Z]\s[0-9]{2})\-?([abcd])?([1-4])?\-?([0-9]{1,2})?\-?([abcd])?\-?([1-4])?\-?([abcd])?");
+            var matchedSheetParts = sheetNameRegex.Match(sheetName);
+
+            var result = new Dictionary<int, string>();
+            var scales = _scaleRanges.Keys.ToArray();
+            var matchedGroups = matchedSheetParts.Groups.Values.ToArray();
+
+            for (int i = 1; i < matchedGroups.Length; i++)
+            {
+                if (matchedGroups[i].Value.Length > 0)
+                {
+                    result.Add(scales[i - 1], matchedGroups[i].Value);
+                }
+            }
+
             return result;
         }
     }

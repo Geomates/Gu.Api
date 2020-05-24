@@ -1,10 +1,7 @@
-using System.Linq;
-using Amazon;
-using Amazon.Runtime;
-using Amazon.Runtime.CredentialManagement;
 using Amazon.S3;
 using Gu.PaftaBulucu.Business.Services;
-using Gu.PaftaBulucu.Data.Respositories;
+using Gu.PaftaBulucu.Data.Repositories;
+using System.Linq;
 using Xunit;
 
 namespace Gu.PaftaBulucu.Business.Tests.Services
@@ -62,6 +59,24 @@ namespace Gu.PaftaBulucu.Business.Tests.Services
 
             Assert.Equal(lat, result.Lat);
             Assert.Equal(lon, result.Lon);
+        }
+
+        [Theory]
+        [InlineData("Mardin-N 47", 100)]
+        [InlineData("Mardin-N 47-b", 50)]
+        [InlineData("Mardin-N 47-b1", 25)]
+        [InlineData("Mardin-N 47-b-17", 10)]
+        [InlineData("Mardin-N 47-b-10", 10)]
+        [InlineData("Mardin-N 47-b-17-b", 5)]
+        [InlineData("Mardin-N 47-b-17-b-1", 2)]
+        [InlineData("Mardin-N 47-b-17-b-1-c", 1)]
+        public void GetSheetParts(string sheetName, int scale)
+        {
+            var sheetService = new SheetService(_sheetRepository);
+            var result = sheetService.GetSheetParts(sheetName);
+            var lastScale = result.Keys.ToList().Last();
+
+            Assert.Equal(scale, lastScale);
         }
     }
 }

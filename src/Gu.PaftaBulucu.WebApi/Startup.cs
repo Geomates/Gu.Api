@@ -1,10 +1,17 @@
 ﻿using Gu.PaftaBulucu.Business.Services;
-using Gu.PaftaBulucu.Data.Respositories;
+using Gu.PaftaBulucu.Data;
+using Gu.PaftaBulucu.Data.Models;
+using Gu.PaftaBulucu.Data.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using Npgsql;
+using System;
 
 namespace Gu.PaftaBulucu.WebApi
 {
@@ -27,8 +34,18 @@ namespace Gu.PaftaBulucu.WebApi
             // Add S3 to the ASP.NET Core dependency injection framework.
             services.AddAWSService<Amazon.S3.IAmazonS3>();
 
+            services.AddDbContext<GuDbContext>(options => 
+                options.UseNpgsql(Environment.GetEnvironmentVariable("DATABASE_CONNECTION")).UseSnakeCaseNamingConvention());
+
+            NpgsqlConnection.GlobalTypeMapper.UseJsonNet(settings: new JsonSerializerSettings
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            });
+
             services.AddTransient<ISheetService, SheetService>();
+            services.AddTransient<IProjectService, ProjectService>();
             services.AddTransient<ISheetRepository, SheetRepository>();
+            services.AddScoped<IDatabaseRepository<Project>, ProjectRepository>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

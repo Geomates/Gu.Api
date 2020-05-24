@@ -9,7 +9,7 @@ Resources:
         Properties:
             OpenApiVersion: '2.0'
             Name: PaftaBulucuApi
-            StageName: prod
+            StageName: prod            
             Auth:
                 DefaultAuthorizer: GuAuth0CustomAuthorizer
                 Authorizers:
@@ -23,6 +23,9 @@ Resources:
             CodeUri: ./src/Gu.ApiGateway.CustomAuthorizer/
             Handler: Gu.ApiGateway.CustomAuthorizer::Gu.ApiGateway.CustomAuthorizer.Function::FunctionHandlerAsync
             Runtime: dotnetcore3.1
+            MemorySize: 256
+            Timeout: 30
+            Role: arn:aws:iam::065627307699:role/GuApiCustomAuthorizerLambdaFunctionRole
             Environment:
                 Variables:
                     VALID_ISSUER: https://geomatik.eu.auth0.com/
@@ -41,10 +44,9 @@ Resources:
             Timeout: 30
             Role: arn:aws:iam::065627307699:role/GuPaftaBulucuLambdaFunctionRole
             Events:
-                ApiEvent:
+                ProxyApi:
                     Type: Api
                     Properties:
-                        Properties:
-                            RestApiId: !Ref PaftaBulucuApi
-                            Path: /{proxy+}
-                            Method: ANY
+                        RestApiId: !Ref PaftaBulucuApi
+                        Path: /{proxy+}
+                        Method: ANY
