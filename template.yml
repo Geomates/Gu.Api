@@ -47,6 +47,12 @@ Resources:
             Timeout: 30
             Role: arn:aws:iam::065627307699:role/GuPaftaBulucuLambdaFunctionRole
             Events:
+                ProxyApiRoot:
+                    Type: Api
+                    Properties:
+                        RestApiId: !Ref PaftaBulucuApi
+                        Path: /
+                        Method: ANY
                 ProxyApi:
                     Type: Api
                     Properties:
