@@ -17,7 +17,7 @@ Resources:
                     FunctionArn: !GetAtt GuAuth0CustomAuthorizer.Arn
             Cors:
                 AllowHeaders: "'Authorization'"
-                AllowOrigin: "*"
+                AllowOrigin: "'*'"
 
     GuAuth0CustomAuthorizer:
         Type: AWS::Serverless::Function
@@ -47,12 +47,6 @@ Resources:
             Timeout: 30
             Role: arn:aws:iam::065627307699:role/GuPaftaBulucuLambdaFunctionRole
             Events:
-                ProxyApiRoot:
-                    Type: Api
-                    Properties:
-                        RestApiId: !Ref PaftaBulucuApi
-                        Path: /
-                        Method: ANY
                 ProxyApi:
                     Type: Api
                     Properties:
