@@ -43,9 +43,6 @@ Resources:
             MemorySize: 256
             Timeout: 30
             Role: arn:aws:iam::065627307699:role/GuPaftaBulucuLambdaFunctionRole
-            Environment:
-                Variables:
-                    DATABASE_CONNECTION: !Ref SQLConnectionString
             Events:
                 ProxyApi:
                     Type: Api
@@ -53,6 +50,3 @@ Resources:
                         RestApiId: !Ref PaftaBulucuApi
                         Path: /{proxy+}
                         Method: ANY
-Parameters:
-    SQLConnectionString:
-        Type: String

@@ -17,11 +17,6 @@ namespace Gu.PaftaBulucu.WebApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAsync()
         {
-            foreach (var userClaim in HttpContext.User.Claims)
-            {
-                Console.WriteLine($"{userClaim.Type} : ${userClaim.Value}");
-            }
-
             var userEmail = HttpContext.User.FindFirst("principalId")?.Value;
             var projects = await _projectService.GetProjects(userEmail);
             return Ok(projects);

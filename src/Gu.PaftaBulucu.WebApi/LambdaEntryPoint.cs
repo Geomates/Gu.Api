@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 
 namespace Gu.PaftaBulucu.WebApi
@@ -8,6 +9,10 @@ namespace Gu.PaftaBulucu.WebApi
         protected override void Init(IWebHostBuilder builder)
         {
             builder
+                .ConfigureAppConfiguration((context, configurationBuilder) =>
+                {
+                    configurationBuilder.AddSystemsManager("/gu/api/");
+                })
                 .UseStartup<Startup>();
         }
 

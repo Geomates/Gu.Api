@@ -34,8 +34,7 @@ namespace Gu.PaftaBulucu.WebApi
             // Add S3 to the ASP.NET Core dependency injection framework.
             services.AddAWSService<Amazon.S3.IAmazonS3>();
 
-            services.AddDbContext<GuDbContext>(options => 
-                options.UseNpgsql(Environment.GetEnvironmentVariable("DATABASE_CONNECTION")).UseSnakeCaseNamingConvention());
+            services.AddDbContext<GuDbContext>(options => options.UseNpgsql(Configuration["postgres:connectionString"]).UseSnakeCaseNamingConvention());
 
             NpgsqlConnection.GlobalTypeMapper.UseJsonNet(settings: new JsonSerializerSettings
             {
