@@ -31,8 +31,8 @@ namespace Gu.PaftaBulucu.WebApi.Controllers
             if (string.IsNullOrEmpty(userEmail))
                 return BadRequest("User e-mail is missing.");
 
-            var projectId = await _projectService.AddProject(userEmail, projectDto);
-            return Ok(projectId);
+            var project = await _projectService.AddProject(userEmail, projectDto);
+            return Ok(project);
         }
 
         [HttpPut("{id}")]

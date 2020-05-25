@@ -31,9 +31,10 @@ namespace Gu.PaftaBulucu.Business.Services
             return TinyMapper.Map<ProjectDto>(project);
         }
 
-        public async Task<int> AddProject(string email, SaveProjectDto projectDto)
+        public async Task<ProjectDto> AddProject(string email, SaveProjectDto projectDto)
         {
             TinyMapper.Bind<SaveProjectDto, Project>();
+            TinyMapper.Bind<Project, ProjectDto>();
             var project = TinyMapper.Map<Project>(projectDto);
 
             project.Created = UnixTimeStamp();
@@ -43,7 +44,7 @@ namespace Gu.PaftaBulucu.Business.Services
 
             await _projectRepository.CommitAsync();
 
-            return project.ProjectId;
+            return TinyMapper.Map<ProjectDto>(project);
         }
 
         public async Task UpdateProject(ProjectDto projectDto)
