@@ -11,7 +11,6 @@ using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Npgsql;
-using System;
 
 namespace Gu.PaftaBulucu.WebApi
 {
@@ -63,7 +62,8 @@ namespace Gu.PaftaBulucu.WebApi
             app.UseCors(x => x
                 .AllowAnyOrigin()
                 .AllowAnyMethod()
-                .AllowAnyHeader());
+                .AllowAnyHeader()
+                .AllowCredentials());
 
             app.UseEndpoints(endpoints =>
             {
