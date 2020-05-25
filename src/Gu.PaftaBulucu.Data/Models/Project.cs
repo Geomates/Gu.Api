@@ -20,6 +20,6 @@ namespace Gu.PaftaBulucu.Data.Models
         [Column(TypeName = "jsonb")]
         public List<SheetEntry> Entries { get; set; }
 
-        public int Created { get; set; }
+        public long Created { get; set; }
     }
 }

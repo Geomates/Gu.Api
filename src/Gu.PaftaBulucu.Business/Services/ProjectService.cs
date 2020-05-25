@@ -1,4 +1,5 @@
-﻿using Gu.PaftaBulucu.Business.Dtos;
+﻿using System;
+using Gu.PaftaBulucu.Business.Dtos;
 using Gu.PaftaBulucu.Data.Models;
 using Gu.PaftaBulucu.Data.Repositories;
 using Nelibur.ObjectMapper;
@@ -16,17 +17,27 @@ namespace Gu.PaftaBulucu.Business.Services
             _projectRepository = projectRepository;
         }
 
-        public async Task<IEnumerable<ListProjectDto>> GetProjects(string email)
+        public async Task<IEnumerable<ProjectDto>> GetProjects(string email)
         {
-            TinyMapper.Bind<List<Project>, List<ListProjectDto>>();
+            TinyMapper.Bind<List<Project>, List<ProjectDto>>();
             var projects = await _projectRepository.FindAsync(p => p.Email == email);
-            return TinyMapper.Map<List<ListProjectDto>>(projects);
+            return TinyMapper.Map<List<ProjectDto>>(projects);
         }
 
-        public async Task<int> SaveProject(SaveProjectDto projectDto)
+        public async Task<ProjectDto> GetProject(int projectId)
+        {
+            TinyMapper.Bind<Project, ProjectDto>();
+            var project = await _projectRepository.GetByIdAsync(projectId);
+            return TinyMapper.Map<ProjectDto>(project);
+        }
+
+        public async Task<int> AddProject(string email, SaveProjectDto projectDto)
         {
             TinyMapper.Bind<SaveProjectDto, Project>();
             var project = TinyMapper.Map<Project>(projectDto);
+
+            project.Created = UnixTimeStamp();
+            project.Email = email;
 
             await _projectRepository.AddAsync(project);
 
@@ -35,17 +46,31 @@ namespace Gu.PaftaBulucu.Business.Services
             return project.ProjectId;
         }
 
-        public async Task SaveProject(int projectId, SaveProjectDto projectDto)
+        public async Task UpdateProject(ProjectDto projectDto)
         {
             TinyMapper.Bind<SaveProjectDto, Project>();
-
-            var project = await _projectRepository.GetByIdAsync(projectId);
-
-            project = TinyMapper.Map(projectDto, project);
+            var project = TinyMapper.Map<Project>(projectDto);
 
             _projectRepository.NotifyChange(project);
 
             await _projectRepository.CommitAsync();
+        }
+
+        public async Task DeleteProject(int projectId)
+        {
+            var project = await _projectRepository.GetByIdAsync(projectId);
+
+            if (project == null)
+                return;
+
+            _projectRepository.Remove(project);
+
+            await _projectRepository.CommitAsync();
+        }
+
+        private long UnixTimeStamp()
+        {
+            return (long)DateTime.UtcNow.ToUniversalTime().Subtract(new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds;
         }
 
         /*
