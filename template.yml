@@ -16,6 +16,8 @@ Resources:
                 Authorizers:
                   GuAuth0CustomAuthorizer:
                     FunctionArn: !GetAtt GuAuth0CustomAuthorizer.Arn
+                    Identity:
+                        ReauthorizeEvery: 0
             Cors: 
                 AllowMethods: "'*'"
                 AllowHeaders: "'Authorization'"
