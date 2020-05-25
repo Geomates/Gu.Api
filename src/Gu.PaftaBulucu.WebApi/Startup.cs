@@ -62,8 +62,7 @@ namespace Gu.PaftaBulucu.WebApi
             app.UseCors(x => x
                 .AllowAnyOrigin()
                 .AllowAnyMethod()
-                .AllowAnyHeader()
-                .AllowCredentials());
+                .AllowAnyHeader());
 
             app.UseEndpoints(endpoints =>
             {
