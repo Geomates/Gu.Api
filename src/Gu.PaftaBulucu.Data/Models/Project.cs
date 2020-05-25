@@ -14,12 +14,9 @@ namespace Gu.PaftaBulucu.Data.Models
 
         public string Name { get; set; }
 
-        [Column("type")]
-        public string ProjectType { get; set; }
-
         [Column(TypeName = "jsonb")]
         public List<SheetEntry> Entries { get; set; }
 
-        public long Created { get; set; }
+        public int Created { get; set; }
     }
 }

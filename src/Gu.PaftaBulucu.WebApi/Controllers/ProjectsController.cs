@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Gu.PaftaBulucu.Business.Dtos;
 using Gu.PaftaBulucu.Business.Services;
+using Gu.PaftaBulucu.WebApi.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Gu.PaftaBulucu.WebApi.Controllers
@@ -18,7 +19,7 @@ namespace Gu.PaftaBulucu.WebApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAsync()
         {
-            var userEmail = HttpContext.User.FindFirst("principalId")?.Value;
+            var userEmail = HttpContext.User.GetEmail();
             var projects = await _projectService.GetProjects(userEmail);
             return Ok(projects);
         }
@@ -26,7 +27,7 @@ namespace Gu.PaftaBulucu.WebApi.Controllers
         [HttpPost]
         public async Task<IActionResult> AddProject([FromBody]SaveProjectDto projectDto)
         {
-            var userEmail = HttpContext.User.FindFirst("principalId")?.Value;
+            var userEmail = HttpContext.User.GetEmail();
             if (string.IsNullOrEmpty(userEmail))
                 return BadRequest("User e-mail is missing.");
 
@@ -37,7 +38,7 @@ namespace Gu.PaftaBulucu.WebApi.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateProject(int id, [FromBody]SaveProjectDto projectDto)
         {
-            var userEmail = HttpContext.User.FindFirst("principalId")?.Value;
+            var userEmail = HttpContext.User.GetEmail();
             if (string.IsNullOrEmpty(userEmail))
                 return BadRequest("User e-mail is missing.");
 
@@ -60,7 +61,7 @@ namespace Gu.PaftaBulucu.WebApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProject(int id)
         {
-            var userEmail = HttpContext.User.FindFirst("principalId")?.Value;
+            var userEmail = HttpContext.User.GetEmail();
             if (string.IsNullOrEmpty(userEmail))
                 return BadRequest("User e-mail is missing.");
 

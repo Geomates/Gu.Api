@@ -12,6 +12,6 @@ namespace Gu.PaftaBulucu.Business.Dtos
 
         public List<SheetEntryDto> Entries { get; set; }
 
-        public long Created { get; set; }
+        public int Created { get; set; }
     }
 }

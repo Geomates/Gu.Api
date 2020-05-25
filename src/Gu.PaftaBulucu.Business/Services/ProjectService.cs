@@ -68,9 +68,9 @@ namespace Gu.PaftaBulucu.Business.Services
             await _projectRepository.CommitAsync();
         }
 
-        private long UnixTimeStamp()
+        private int UnixTimeStamp()
         {
-            return (long)DateTime.UtcNow.ToUniversalTime().Subtract(new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds;
+            return (int)DateTime.UtcNow.ToUniversalTime().Subtract(new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalSeconds;
         }
 
         /*
