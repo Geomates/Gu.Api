@@ -18,7 +18,7 @@ Resources:
                     FunctionArn: !GetAtt GuAuth0CustomAuthorizer.Arn
             Cors: 
                 AllowMethods: "'*'"
-                AllowHeaders: "'*'"
+                AllowHeaders: "'Authorization'"
                 AllowOrigin: "'*'"
 
     GuAuth0CustomAuthorizer:
