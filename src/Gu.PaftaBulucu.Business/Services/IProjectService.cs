@@ -7,8 +7,8 @@ namespace Gu.PaftaBulucu.Business.Services
     public interface IProjectService
     {
         Task<IEnumerable<ProjectDto>> GetProjects(string email);
-        Task<ProjectDto> AddProject(string email, SaveProjectDto projectDto);
-        Task UpdateProject(ProjectDto projectDto);
+        Task<ProjectDto> AddProject(SaveProjectDto projectDto);
+        Task UpdateProject(SaveProjectDto projectDto);
         Task<ProjectDto> GetProject(int projectId);
         Task DeleteProject(int projectId);
     }

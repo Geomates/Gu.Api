@@ -31,29 +31,22 @@ namespace Gu.PaftaBulucu.WebApi.Controllers
             if (string.IsNullOrEmpty(userEmail))
                 return BadRequest("User e-mail is missing.");
 
-            var project = await _projectService.AddProject(userEmail, projectDto);
+            projectDto.Email = userEmail;
+
+            var project = await _projectService.AddProject(projectDto);
             return Ok(project);
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateProject(int id, [FromBody]SaveProjectDto projectDto)
+        [HttpPut]
+        public async Task<IActionResult> UpdateProject([FromBody]SaveProjectDto projectDto)
         {
             var userEmail = HttpContext.User.GetEmail();
             if (string.IsNullOrEmpty(userEmail))
                 return BadRequest("User e-mail is missing.");
 
-            var project = await _projectService.GetProject(id);
+            projectDto.Email = userEmail;
 
-            if (project == null)
-                return NotFound();
-
-            if (project.Email != userEmail)
-                return Forbid();
-
-            project.Entries = projectDto.Entries;
-            project.Name = projectDto.Name;
-
-            await _projectService.UpdateProject(project);
+            await _projectService.UpdateProject(projectDto);
 
             return Ok();
         }

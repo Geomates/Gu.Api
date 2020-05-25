@@ -31,14 +31,13 @@ namespace Gu.PaftaBulucu.Business.Services
             return TinyMapper.Map<ProjectDto>(project);
         }
 
-        public async Task<ProjectDto> AddProject(string email, SaveProjectDto projectDto)
+        public async Task<ProjectDto> AddProject(SaveProjectDto projectDto)
         {
             TinyMapper.Bind<SaveProjectDto, Project>();
             TinyMapper.Bind<Project, ProjectDto>();
             var project = TinyMapper.Map<Project>(projectDto);
 
             project.Created = UnixTimeStamp();
-            project.Email = email;
 
             await _projectRepository.AddAsync(project);
 
@@ -47,10 +46,20 @@ namespace Gu.PaftaBulucu.Business.Services
             return TinyMapper.Map<ProjectDto>(project);
         }
 
-        public async Task UpdateProject(ProjectDto projectDto)
+        public async Task UpdateProject(SaveProjectDto projectDto)
         {
-            TinyMapper.Bind<SaveProjectDto, Project>();
-            var project = TinyMapper.Map<Project>(projectDto);
+            TinyMapper.Bind<List<SheetEntryDto>, List<SheetEntry>>();
+
+            var project = await _projectRepository.GetByIdAsync(projectDto.ProjectId);
+            
+            if (project == null)
+                throw new ArgumentException("Project not found");
+
+            if (project.Email != projectDto.Email)
+                throw new ArgumentException("Project e-mail is not matched with user e-mail");
+
+            project.Entries = TinyMapper.Map<List<SheetEntry>>(projectDto.Entries);
+            project.Name = projectDto.Name;
 
             _projectRepository.NotifyChange(project);
 
