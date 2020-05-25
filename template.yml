@@ -12,6 +12,7 @@ Resources:
             StageName: prod            
             Auth:
                 DefaultAuthorizer: GuAuth0CustomAuthorizer
+                AddDefaultAuthorizerToCorsPreflight: false
                 Authorizers:
                   GuAuth0CustomAuthorizer:
                     FunctionArn: !GetAtt GuAuth0CustomAuthorizer.Arn
