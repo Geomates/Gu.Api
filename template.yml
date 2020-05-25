@@ -20,7 +20,7 @@ Resources:
                         ReauthorizeEvery: 0
             Cors: 
                 AllowMethods: "'*'"
-                AllowHeaders: "'Authorization'"
+                AllowHeaders: "'*'"
                 AllowOrigin: "'*'"
 
     GuAuth0CustomAuthorizer:
