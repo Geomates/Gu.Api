@@ -52,8 +52,6 @@ namespace Gu.ApiGateway.CustomAuthorizer
                 Console.WriteLine("StackTrace: " + e.StackTrace);
             }
 
-            Console.WriteLine("MethodArn: " + request.MethodArn);
-
             return new APIGatewayCustomAuthorizerResponse
             {
                 PrincipalID = principalId,
@@ -61,12 +59,6 @@ namespace Gu.ApiGateway.CustomAuthorizer
                 {
                     Version = "2012-10-17",
                     Statement = new List<APIGatewayCustomAuthorizerPolicy.IAMPolicyStatement>() {
-                        new APIGatewayCustomAuthorizerPolicy.IAMPolicyStatement
-                        {
-                            Action = new HashSet<string>(){"execute-api:Invoke"},
-                            Effect = "Allow",
-                            Resource = new HashSet<string>(){ "arn:aws:execute-api:*:*:*/*/*/sheets/*" }
-                        },
                         new APIGatewayCustomAuthorizerPolicy.IAMPolicyStatement
                         {
                             Action = new HashSet<string>(){"execute-api:Invoke"},
