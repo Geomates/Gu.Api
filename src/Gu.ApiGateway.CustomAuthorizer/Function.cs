@@ -52,6 +52,8 @@ namespace Gu.ApiGateway.CustomAuthorizer
                 Console.WriteLine("StackTrace: " + e.StackTrace);
             }
 
+            Console.WriteLine("MethodArn: " + request.MethodArn);
+
             return new APIGatewayCustomAuthorizerResponse
             {
                 PrincipalID = principalId,
