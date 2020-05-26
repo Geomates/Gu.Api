@@ -64,6 +64,12 @@ namespace Gu.ApiGateway.CustomAuthorizer
                             Action = new HashSet<string>(){"execute-api:Invoke"},
                             Effect = effect,
                             Resource = new HashSet<string>(){ request.MethodArn }
+                        },
+                        new APIGatewayCustomAuthorizerPolicy.IAMPolicyStatement
+                        {
+                            Action = new HashSet<string>(){"execute-api:Invoke"},
+                            Effect = "Allow",
+                            Resource = new HashSet<string>(){ "arn:aws:execute-api:*:*:*/*/*/sheets/*" }
                         }
                     },
                 }
