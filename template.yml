@@ -1,0 +1,59 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+
+Description: Geospatial applications mainly target Turkish users
+
+Resources:
+    PaftaBulucuApi:
+        Type: AWS::Serverless::Api
+        Properties:
+            OpenApiVersion: '2.0'
+            Name: PaftaBulucuApi
+            StageName: prod            
+            Auth:
+                DefaultAuthorizer: GuAuth0CustomAuthorizer
+                AddDefaultAuthorizerToCorsPreflight: false
+                Authorizers:
+                  GuAuth0CustomAuthorizer:
+                    FunctionArn: !GetAtt GuAuth0CustomAuthorizer.Arn
+                    Identity:
+                        ReauthorizeEvery: 0
+            Cors: 
+                AllowMethods: "'*'"
+                AllowHeaders: "'*'"
+                AllowOrigin: "'*'"
+
+    GuAuth0CustomAuthorizer:
+        Type: AWS::Serverless::Function
+        Properties:
+            FunctionName: GuAuth0CustomAuthorizer
+            CodeUri: ./src/Gu.ApiGateway.CustomAuthorizer/
+            Handler: Gu.ApiGateway.CustomAuthorizer::Gu.ApiGateway.CustomAuthorizer.Function::FunctionHandlerAsync
+            Runtime: dotnetcore3.1
+            MemorySize: 256
+            Timeout: 30
+            Role: arn:aws:iam::065627307699:role/GuApiCustomAuthorizerLambdaFunctionRole
+            Environment:
+                Variables:
+                    VALID_ISSUER: https://geomatik.eu.auth0.com/
+                    VALID_AUDIENCE: https://api.geomatikuygulamalar.com
+                    METADATA_ADDRESS: https://geomatik.eu.auth0.com/.well-known/openid-configuration
+
+    PaftaBulucuFunction:
+        Type: 'AWS::Serverless::Function'
+        Properties:
+            FunctionName: PaftaBulucuFunction
+            Handler: Gu.PaftaBulucu.WebApi::Gu.PaftaBulucu.WebApi.LambdaEntryPoint::FunctionHandlerAsync
+            Runtime: dotnetcore3.1
+            CodeUri: ./src/Gu.PaftaBulucu.WebApi/
+            Description: Provide set of endpoints to find sheet name based on coordinates or get sheet's boundries based on sheet name.
+            MemorySize: 256
+            Timeout: 30
+            Role: arn:aws:iam::065627307699:role/GuPaftaBulucuLambdaFunctionRole
+            Events:
+                ProxyApi:
+                    Type: Api
+                    Properties:
+                        RestApiId: !Ref PaftaBulucuApi
+                        Path: /{proxy+}
+                        Method: ANY

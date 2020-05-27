@@ -7,7 +7,7 @@ using Amazon.S3.Model;
 using Gu.PaftaBulucu.Data.Models;
 using Newtonsoft.Json;
 
-namespace Gu.PaftaBulucu.Data.Respositories
+namespace Gu.PaftaBulucu.Data.Repositories
 {
     public class SheetRepository : ISheetRepository
     {

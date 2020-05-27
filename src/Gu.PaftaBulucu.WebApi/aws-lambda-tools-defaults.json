@@ -1,13 +1,5 @@
-
 {
-    "Information" : ["Pafta Bulucu API Deployment Configuration"],
-    "profile"     : "default",
-    "region"      : "eu-west-1",
-    "configuration" : "Release",
-    "framework"     : "netcoreapp2.0",
-    "s3-prefix"     : "aws_webapi/",
-    "template"      : "serverless.template",
-    "s3-bucket"     : "gu-pb-api-deployments",
-    "stack-name"    : "gu-pb-api",
-    "stack-wait"    : false
+  "framework": "netcoreapp3.1",
+  "region": "eu-west-1",
+  "function-handler": "Gu.PaftaBulucu.WebApi::Gu.PaftaBulucu.WebApi.LambdaEntryPoint::FunctionHandlerAsync"
 }

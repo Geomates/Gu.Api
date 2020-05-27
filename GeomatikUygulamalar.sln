@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27428.2005
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gu.PaftaBulucu.WebApi", "src\Gu.PaftaBulucu.WebApi\Gu.PaftaBulucu.WebApi.csproj", "{51F450FE-FA24-4CEC-8D6C-B2F6B1957598}"
 EndProject
@@ -15,7 +15,18 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gu.PaftaBulucu.Data", "src\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gu.PaftaBulucu.Data.Tests", "test\Gu.PaftaBulucu.Data.Tests\Gu.PaftaBulucu.Data.Tests.csproj", "{BEE78012-81F9-43ED-B038-91015A3712F4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gu.PaftaBulucu.Business.Tests", "test\Gu.PaftaBulucu.Business.Tests\Gu.PaftaBulucu.Business.Tests.csproj", "{F63B274A-9388-42E4-9999-E89A576D19E1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gu.PaftaBulucu.Business.Tests", "test\Gu.PaftaBulucu.Business.Tests\Gu.PaftaBulucu.Business.Tests.csproj", "{F63B274A-9388-42E4-9999-E89A576D19E1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Files", "Solution Files", "{9967E447-3FB4-461A-9A39-EB8E2CFC1D23}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		aws-lambda-tools-defaults.json = aws-lambda-tools-defaults.json
+		.github\workflows\deploy.yml = .github\workflows\deploy.yml
+		Readme.md = Readme.md
+		template.yml = template.yml
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gu.ApiGateway.CustomAuthorizer", "src\Gu.ApiGateway.CustomAuthorizer\Gu.ApiGateway.CustomAuthorizer.csproj", "{6E78977F-3709-48C2-A0B8-F9EA6AB952CD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,6 +58,10 @@ Global
 		{F63B274A-9388-42E4-9999-E89A576D19E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F63B274A-9388-42E4-9999-E89A576D19E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F63B274A-9388-42E4-9999-E89A576D19E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E78977F-3709-48C2-A0B8-F9EA6AB952CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E78977F-3709-48C2-A0B8-F9EA6AB952CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E78977F-3709-48C2-A0B8-F9EA6AB952CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E78977F-3709-48C2-A0B8-F9EA6AB952CD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

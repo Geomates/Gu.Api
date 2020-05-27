@@ -1,6 +1,6 @@
 ﻿using Gu.PaftaBulucu.Data.Models;
 
-namespace Gu.PaftaBulucu.Data.Respositories
+namespace Gu.PaftaBulucu.Data.Repositories
 {
     public interface ISheetRepository
     {
