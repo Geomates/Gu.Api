@@ -1,12 +1,14 @@
-# Geomatik Uygulamalar - Pafta Bulucu API
+# Geomatik Uygulamalar - API
 
 Technologies:
 
- - ASP .Net Core - Web API 2
+ - ASP .Net Core 3.1
  - AWS Lambda
  - AWS CloudFormation
+ - AWS API Gateway
  - AWS S3
+ - Auth0
 
-Website: [www.paftabulucu.com](http://www.paftabulucu.com)
+Website: [www.geomatikuygulamalar.com](http://www.geomatikuygulamalar.com)
  
 Maintained by Geomates
