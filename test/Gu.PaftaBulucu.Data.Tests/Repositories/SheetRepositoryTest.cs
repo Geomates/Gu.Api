@@ -8,8 +8,8 @@ namespace Gu.PaftaBulucu.Data.Tests.Repositories
     public class SheetRepositoryTest
     {
         [Theory]
-        [InlineData(1494000100, 1062000100, "İstanbul-E 23")]
-        [InlineData(1296004000, 918000300, "Kalimnos-P 15")]
+        [InlineData(1494000100, 1062000100, "İstanbul-E23")]
+        [InlineData(1296004000, 918000300, "Kalimnos-P15")]
         public void FindSheet_100Scale(int lat, int lon, string sheetName)
         {
 
@@ -24,8 +24,8 @@ namespace Gu.PaftaBulucu.Data.Tests.Repositories
         }
 
         [Theory]
-        [InlineData("İstanbul-E 23", 1494000000, 1062000000)]
-        [InlineData("Kalimnos-P 15", 1296000000, 918000000)]
+        [InlineData("İstanbul-E23", 1494000000, 1062000000)]
+        [InlineData("Kalimnos-P15", 1296000000, 918000000)]
         public void FindSheet_ByName(string sheetName, int lat, int lon)
         {
 
