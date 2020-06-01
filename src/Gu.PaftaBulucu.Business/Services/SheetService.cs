@@ -166,7 +166,7 @@ namespace Gu.PaftaBulucu.Business.Services
         public Dictionary<int, string> GetSheetParts(string sheetName)
         {
             var sheetNameRegex =
-                new Regex(@"^([a-zA-ZsçÇöÖşŞıİğĞüÜ]*)?\-?([A-Z][0-9]{2})\-?([abcd])?([1-4])?\-?([0-9]{1,2})?\-?([abcd])?\-?([1-4])?\-?([abcd])?");
+                new Regex(@"^([a-zA-ZsçÇöÖşŞıİğĞüÜ]*)\-?([A-Z][0-9]{2})?\-?([abcd])?([1-4])?\-?([0-9]{1,2})?\-?([abcd])?\-?([1-4])?\-?([abcd])?");
             var matchedSheetParts = sheetNameRegex.Match(sheetName);
 
             var result = new Dictionary<int, string>();
