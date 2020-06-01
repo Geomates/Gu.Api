@@ -49,7 +49,7 @@ namespace Gu.PaftaBulucu.Bot
                     await botService.AskScaleAsync(webhookMessage.Message.Chat.Id, webhookMessage.Message.Location);
                 }
 
-                if (webhookMessage.CallbackQuery != null && webhookMessage.CallbackQuery.Message.Text == "Pafta ölçeğini seçiniz:" && int.TryParse(webhookMessage.CallbackQuery.Data, out int scale))
+                if (webhookMessage.CallbackQuery != null && webhookMessage.CallbackQuery.Message.Text == "Pafta ölçeğini seçiniz (1:___.000):" && int.TryParse(webhookMessage.CallbackQuery.Data, out int scale))
                 {
                     await botService.QuerySheetAsync(webhookMessage.CallbackQuery.Message.MessageId, webhookMessage.CallbackQuery.Id, webhookMessage.CallbackQuery.Message.Chat.Id, scale);
                 }
