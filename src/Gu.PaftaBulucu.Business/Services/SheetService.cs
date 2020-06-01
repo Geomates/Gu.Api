@@ -140,21 +140,26 @@ namespace Gu.PaftaBulucu.Business.Services
 
         private SheetDto AggregateSheets(int lat, int lon, int scale)
         {
+            var sheet = _sheetRepository.FindByCoordinatesAndScale(lat, lon, scale > 100 ? 250 : 100);
+
             var result = new SheetDto
             {
-                Scale = scale
+                Scale = scale,
+                Lat = sheet.Lat,
+                Lon = sheet.Lon,
+                Name = sheet.Name
             };
 
-            var nameBuilder = new StringBuilder();
+            var nameBuilder = new StringBuilder(result.Name);
 
-            foreach (var s in new[] { 100, 50, 25, 10, 5, 2, 1 })
+            foreach (var s in new[] { 50, 25, 10, 5, 2, 1 })
             {
+                if (s < scale) break;
                 if (s == 25 && scale != s) continue; // skip 1:25.000 unless it is expected result 
-                var sheet = _sheetRepository.FindByCoordinatesAndScale(lat, lon, s);
-                nameBuilder.Append(s == 100 || s == 25 ? sheet.Name : "-" + sheet.Name);
+                sheet = _sheetRepository.FindByCoordinatesAndScale(lat, lon, s);
+                nameBuilder.Append(s == 25 ? sheet.Name : "-" + sheet.Name);
                 result.Lat += sheet.Lat;
                 result.Lon += sheet.Lon;
-                if (s == scale) break;
             }
 
             result.Name = nameBuilder.ToString();
