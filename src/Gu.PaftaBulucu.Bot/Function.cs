@@ -30,35 +30,33 @@ namespace Gu.PaftaBulucu.Bot
                 StatusCode = (int)HttpStatusCode.OK
             };
 
-            WebhookMessage webhookMessage = null;
-
             try
             {
-                webhookMessage = JsonConvert.DeserializeObject<WebhookMessage>(request.Body);
+                var webhookMessage = JsonConvert.DeserializeObject<WebhookMessage>(request.Body);
+
+                if (webhookMessage == null)
+                {
+                    return response;
+                }
+
+                var serviceCollection = new ServiceCollection();
+                ConfigureServices(serviceCollection);
+                var serviceProvider = serviceCollection.BuildServiceProvider();
+                var botService = serviceProvider.GetService<IBotService>();
+
+                if (webhookMessage.Message?.Location != null)
+                {
+                    await botService.AskScaleAsync(webhookMessage.Message.Chat.Id, webhookMessage.Message.Location);
+                }
+
+                if (webhookMessage.CallbackQuery != null && webhookMessage.CallbackQuery.Message.Text == "Pafta ölçeğini seçiniz:" && int.TryParse(webhookMessage.CallbackQuery.Data, out int scale))
+                {
+                    await botService.QuerySheetAsync(webhookMessage.CallbackQuery.Message.MessageId, webhookMessage.CallbackQuery.Id, webhookMessage.CallbackQuery.Message.Chat.Id, scale);
+                }
             }
             catch (Exception ex)
             {
                 LambdaLogger.Log("Error: " + ex.Message);
-            }
-
-            if (webhookMessage == null)
-            {
-                return response;
-            }
-
-            var serviceCollection = new ServiceCollection();
-            ConfigureServices(serviceCollection);
-            var serviceProvider = serviceCollection.BuildServiceProvider();
-            var botService = serviceProvider.GetService<IBotService>();
-
-            if (webhookMessage.Message?.Location != null)
-            {
-                await botService.AskScaleAsync(webhookMessage.Message.Chat.Id, webhookMessage.Message.Location);
-            }
-
-            if (webhookMessage.CallbackQuery != null && webhookMessage.CallbackQuery.Message.Text == "Pafta ölçeğini seçiniz:" && int.TryParse(webhookMessage.CallbackQuery.Data, out int scale))
-            {
-                await botService.QuerySheetAsync(webhookMessage.CallbackQuery.Message.MessageId, webhookMessage.CallbackQuery.Id, webhookMessage.CallbackQuery.Message.Chat.Id, scale);
             }
 
             return response;
