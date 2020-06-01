@@ -9,6 +9,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
 using Amazon.SimpleSystemsManagement;
+using Gu.PaftaBulucu.Business.Services;
 
 
 [assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.SystemTextJson.DefaultLambdaJsonSerializer))]
@@ -71,6 +72,7 @@ namespace Gu.PaftaBulucu.Bot
             });
             services.AddTransient<IBotService, BotService>();
             services.AddTransient<ITelegramService, TelegramService>();
+            services.AddTransient<ISheetService, SheetService>();
             services.AddTransient<IAmazonDynamoDbService, AmazonDynamoDbService>();
             services.AddTransient<IParameterService, ParameterService>();
         }
