@@ -1,11 +1,11 @@
 ﻿{
 	"resource": "/{proxy+}",
-	"path": "/sheets/1/K%C4%B1r%C5%9Fehir-I%2031-a-20-d-4-a",
+	"path": "/sheets/1/K%C4%B1r%C5%9Fehir-I31-a-20-d-4-a",
 	"httpMethod": "GET",
 	"headers": null,
 	"queryStringParameters": null,
 	"pathParameters": {
-		"proxy": "sheets/1/K%C4%B1r%C5%9Fehir-I%2031-a-20-d-4-a"
+		"proxy": "sheets/1/K%C4%B1r%C5%9Fehir-I31-a-20-d-4-a"
 	},
 	"stageVariables": null,
 	"requestContext": {

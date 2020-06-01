@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using Amazon.S3;
+﻿using Amazon.S3;
 using Amazon.S3.Model;
 using Gu.PaftaBulucu.Data.Models;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using System;
+using System.IO;
+using System.Linq;
 
 namespace Gu.PaftaBulucu.Data.Repositories
 {
@@ -13,20 +13,13 @@ namespace Gu.PaftaBulucu.Data.Repositories
     {
         private readonly IAmazonS3 _amazonS3;
 
-        private string _s3BucketName { get; set; }
+        private readonly string _s3BucketName;
 
-        public SheetRepository(IAmazonS3 amazonS3)
+        public SheetRepository(IAmazonS3 amazonS3, IConfiguration configuration)
         {
             _amazonS3 = amazonS3;
+            _s3BucketName = configuration["BucketName"];
         }
-
-        public ISheetRepository SetS3BucketName(string s3BucketName)
-        {
-            _s3BucketName = s3BucketName;
-            return this;
-        }
-
-        public Sheet FindByName(string name) => FindInJsonByName(name);
 
         public Sheet FindByCoordinatesAndScale(int lat, int lon, int scale)
         {
@@ -35,10 +28,13 @@ namespace Gu.PaftaBulucu.Data.Repositories
 
             switch (scale)
             {
+                case 250:
+                    range = 36000000;
+                    return FindByCoordinatesAndOffset(lat, lon, scale, range, range * 3 / 2);
                 case 100:
                     range = 36000000;
                     offset = range / 2;
-                    return FindInJsonByCoordinatesAndOffset(lat, lon, offset);
+                    return FindByCoordinatesAndOffset(lat, lon, scale, offset, offset);
                 case 50:
                     range = 18000000;
                     offset = range / 2;
@@ -123,7 +119,7 @@ namespace Gu.PaftaBulucu.Data.Repositories
             };
         }
 
-        private Sheet FindInJsonByCoordinatesAndOffset(int lat, int lon, int offset)
+        private Sheet FindByCoordinatesAndOffset(int lat, int lon, int scale, int latOffset, int lonOffset)
         {
             var getResponse = _amazonS3.GetObjectAsync(new GetObjectRequest
             {
@@ -131,20 +127,23 @@ namespace Gu.PaftaBulucu.Data.Repositories
                 Key = "sheets.json"
             }).Result;
 
-            List<Sheet> sheets;
+            SheetsEnvelope sheets;
 
             var serializer = new JsonSerializer();
 
             using (var streamReader = new StreamReader(getResponse.ResponseStream))
             using (var jsonTextReader = new JsonTextReader(streamReader))
             {
-                sheets = serializer.Deserialize<List<Sheet>>(jsonTextReader);
+                sheets = serializer.Deserialize<SheetsEnvelope>(jsonTextReader);
             }
 
-            return sheets.FirstOrDefault(s => lat > s.Lat && lat < s.Lat + offset && lon > s.Lon && lon < s.Lon + offset);
+            if (scale == 100)
+                return sheets.Sheets100.FirstOrDefault(s => lat > s.Lat && lat < s.Lat + latOffset && lon > s.Lon && lon < s.Lon + lonOffset);
+
+            return sheets.Sheets250.FirstOrDefault(s => lat > s.Lat && lat < s.Lat + latOffset && lon > s.Lon && lon < s.Lon + lonOffset);
         }
 
-        private Sheet FindInJsonByName(string name)
+        public Sheet FindByNameAndScale(string name, int scale)
         {
             var getResponse = _amazonS3.GetObjectAsync(new GetObjectRequest
             {
@@ -152,17 +151,20 @@ namespace Gu.PaftaBulucu.Data.Repositories
                 Key = "sheets.json"
             }).Result;
 
-            List<Sheet> sheets;
+            SheetsEnvelope sheets;
 
             var serializer = new JsonSerializer();
 
             using (var streamReader = new StreamReader(getResponse.ResponseStream))
             using (var jsonTextReader = new JsonTextReader(streamReader))
             {
-                sheets = serializer.Deserialize<List<Sheet>>(jsonTextReader);
+                sheets = serializer.Deserialize<SheetsEnvelope>(jsonTextReader);
             }
 
-            return sheets.FirstOrDefault(s => s.Name == name);
+            if (scale == 100)
+                return sheets.Sheets100.FirstOrDefault(s => s.Name == name);
+
+            return sheets.Sheets250.FirstOrDefault(s => s.Name == name);
         }
     }
 }
