@@ -29,38 +29,48 @@ namespace Gu.PaftaBulucu.Bot.Services
 
         public async Task<bool> AskScaleAsync(int chatId, Location location)
         {
+            if (location.Longitude > 45 || location.Longitude < 25.5 || 
+                location.Latitude > 42.5 || location.Latitude < 36)
+            {
+                return await _telegramService.SendMessage(new TelegramMessage
+                {
+                    ChatId = chatId.ToString(),
+                    Text = "Koordinatlar sınır dışında kalıyor."
+                });
+            }
+
             var response = await _amazonDynamoDbService.UpdateAsync(chatId, location.Latitude, location.Longitude);
 
-            var message = new TelegramMessage
+            if (!response)
             {
-                ChatId = chatId.ToString(),
-                Text = "Bir hata oluştu."
-            };
-
-            if (!response) 
-                return await _telegramService.SendMessage(message);
+                return await _telegramService.SendMessage(new TelegramMessage
+                {
+                    ChatId = chatId.ToString(),
+                    Text = "Bir hata oluştu."
+                });
+            }
 
             var replyMarkup = new TelegramInlineKeyboardMarkup
             {
                 InlineKeyboard = new List<IEnumerable<TelegramInlineKeyboardButton>>{
                     new List<TelegramInlineKeyboardButton>
                     {
-                        new TelegramInlineKeyboardButton { Text = "1:250.000", CallBackData = "250" },
-                        new TelegramInlineKeyboardButton { Text = "1:100.000", CallBackData = "100" },
-                        new TelegramInlineKeyboardButton { Text = "1:50.000", CallBackData = "50" },
-                        new TelegramInlineKeyboardButton { Text = "1:25.000", CallBackData = "25" },
-                        new TelegramInlineKeyboardButton { Text = "1:10.000", CallBackData = "10" },
-                        new TelegramInlineKeyboardButton { Text = "1:5.000", CallBackData = "5" },
-                        new TelegramInlineKeyboardButton { Text = "1:2.000", CallBackData = "2" },
-                        new TelegramInlineKeyboardButton { Text = "1:1.000", CallBackData = "1" }
+                        new TelegramInlineKeyboardButton { Text = "250", CallBackData = "250" },
+                        new TelegramInlineKeyboardButton { Text = "100", CallBackData = "100" },
+                        new TelegramInlineKeyboardButton { Text = "50", CallBackData = "50" },
+                        new TelegramInlineKeyboardButton { Text = "25", CallBackData = "25" },
+                        new TelegramInlineKeyboardButton { Text = "10", CallBackData = "10" },
+                        new TelegramInlineKeyboardButton { Text = "5", CallBackData = "5" },
+                        new TelegramInlineKeyboardButton { Text = "2", CallBackData = "2" },
+                        new TelegramInlineKeyboardButton { Text = "1", CallBackData = "1" }
                     }
                 }
             };
 
-            message = new TelegramMessage
+            var message = new TelegramMessage
             {
                 ChatId = chatId.ToString(),
-                Text = "Pafta ölçeğini seçiniz:",
+                Text = "Pafta ölçeğini seçiniz (1:___.000):",
                 ReplyMarkup = JsonConvert.SerializeObject(replyMarkup)
             };
 
