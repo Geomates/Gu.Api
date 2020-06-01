@@ -1,4 +1,5 @@
 ﻿using Gu.PaftaBulucu.Business.Dtos;
+using Gu.PaftaBulucu.Data.Models;
 using Gu.PaftaBulucu.Data.Repositories;
 using System;
 using System.Collections.Generic;
@@ -25,7 +26,7 @@ namespace Gu.PaftaBulucu.Business.Services
 
         public SheetService(ISheetRepository sheetRepository)
         {
-            _sheetRepository = sheetRepository.SetS3BucketName("pafta.bulucu");
+            _sheetRepository = sheetRepository;
         }
 
         public IEnumerable<SheetDto> GetSheetsByCoordinate(double latitude, double longitude, int scale)
@@ -80,18 +81,23 @@ namespace Gu.PaftaBulucu.Business.Services
                 throw new ArgumentException("Sheet name is not valid format", nameof(name));
             }
 
-            var sheet100 = _sheetRepository.FindByName(sheetParts[100]);
+            var originSheetName = sheetParts[250];
 
-            if (sheet100 == null)
+            if (scale < 250)
+                originSheetName += $"-{sheetParts[100]}";
+
+            var originSheet = _sheetRepository.FindByNameAndScale(originSheetName, scale <= 100 ? 100 : 250);
+
+            if (originSheet == null)
             {
                 throw new KeyNotFoundException("Sheet not found!");
             }
 
             var result = new SheetDto
             {
-                Lat = sheet100.Lat,
-                Lon = sheet100.Lon,
-                Name = name,
+                Lat = originSheet.Lat,
+                Lon = originSheet.Lon,
+                Name = originSheet.Name,
                 Scale = scale
             };
 
@@ -161,11 +167,11 @@ namespace Gu.PaftaBulucu.Business.Services
         public Dictionary<int, string> GetSheetParts(string sheetName)
         {
             var sheetNameRegex =
-                new Regex(@"^([a-zA-ZsçÇöÖşŞıİğĞüÜ]*?\-?[A-Z][0-9]{2})\-?([abcd])?([1-4])?\-?([0-9]{1,2})?\-?([abcd])?\-?([1-4])?\-?([abcd])?");
+                new Regex(@"^([a-zA-ZsçÇöÖşŞıİğĞüÜ]*)?\-?([A-Z][0-9]{2})\-?([abcd])?([1-4])?\-?([0-9]{1,2})?\-?([abcd])?\-?([1-4])?\-?([abcd])?");
             var matchedSheetParts = sheetNameRegex.Match(sheetName);
 
             var result = new Dictionary<int, string>();
-            var scales = _scaleRanges.Keys.ToArray();
+            var scales = new int[] { 250 }.Concat(_scaleRanges.Keys).ToArray();
             var matchedGroups = matchedSheetParts.Groups.Values.ToArray();
 
             for (int i = 1; i < matchedGroups.Length; i++)

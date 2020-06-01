@@ -1,22 +1,32 @@
 ﻿using Amazon;
 using Amazon.S3;
 using Gu.PaftaBulucu.Data.Repositories;
+using Microsoft.Extensions.Configuration;
+using Moq;
 using Xunit;
 
 namespace Gu.PaftaBulucu.Data.Tests.Repositories
 {
     public class SheetRepositoryTest
     {
+        private readonly Mock<IConfiguration> _configuration;
+
+        public SheetRepositoryTest()
+        {
+            _configuration = new Mock<IConfiguration>();
+            _configuration.SetupGet(x => x[It.Is<string>(s => s == "BucketName")]).Returns("pafta.bulucu.dev");
+        }
+
+
         [Theory]
         [InlineData(1494000100, 1062000100, "İstanbul-E23")]
         [InlineData(1296004000, 918000300, "Kalimnos-P15")]
         public void FindSheet_100Scale(int lat, int lon, string sheetName)
         {
-
             var sheetRepository = new SheetRepository(new AmazonS3Client(new AmazonS3Config()
             {
                 RegionEndpoint = RegionEndpoint.EUWest1
-            })).SetS3BucketName("pafta.bulucu");
+            }), _configuration.Object);
 
             var sheet = sheetRepository.FindByCoordinatesAndScale(lat, lon, 100);
 
@@ -32,9 +42,9 @@ namespace Gu.PaftaBulucu.Data.Tests.Repositories
             var sheetRepository = new SheetRepository(new AmazonS3Client(new AmazonS3Config()
             {
                 RegionEndpoint = RegionEndpoint.EUWest1
-            })).SetS3BucketName("pafta.bulucu");
+            }), _configuration.Object);
 
-            var sheet = sheetRepository.FindByName(sheetName);
+            var sheet = sheetRepository.FindByNameAndScale(sheetName,100);
 
             Assert.Equal(sheetName, sheet.Name);
             Assert.Equal(lat, sheet.Lat);
@@ -53,7 +63,7 @@ namespace Gu.PaftaBulucu.Data.Tests.Repositories
         public void FindSheet_FindIn4Sheets(int lat, int lon, string sheetName)
         {
 
-            var sheetRepository = new SheetRepository(null);
+            var sheetRepository = new SheetRepository(null, _configuration.Object);
 
             var sheet = sheetRepository.FindByCoordinatesAndScale(lat, lon, 50);
 
@@ -71,7 +81,7 @@ namespace Gu.PaftaBulucu.Data.Tests.Repositories
             var lon = 1062000000;
             var offset = 1800000;
 
-            var sheetRepository = new SheetRepository(null);
+            var sheetRepository = new SheetRepository(null, _configuration.Object);
             int index = 1;
 
             for (int row = 0; row < 5; row++)

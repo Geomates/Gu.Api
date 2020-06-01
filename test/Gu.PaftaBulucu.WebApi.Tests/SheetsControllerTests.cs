@@ -9,8 +9,6 @@ namespace Gu.PaftaBulucu.WebApi.Tests
 {
     public class SheetsControllerTests
     {
-
-
         [Fact]
         public async Task TestGetByName()
         {
@@ -38,7 +36,5 @@ namespace Gu.PaftaBulucu.WebApi.Tests
             Assert.Equal(200, response.StatusCode);
             Assert.Equal("[{\"name\":\"Mardin-N47-b-17\",\"lat\":37.3,\"lon\":41.8,\"scale\":10}]", response.Body);
         }
-
-
     }
 }

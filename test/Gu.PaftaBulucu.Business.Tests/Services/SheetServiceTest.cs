@@ -1,6 +1,8 @@
 using Amazon.S3;
 using Gu.PaftaBulucu.Business.Services;
 using Gu.PaftaBulucu.Data.Repositories;
+using Microsoft.Extensions.Configuration;
+using Moq;
 using System.Linq;
 using Xunit;
 
@@ -8,11 +10,14 @@ namespace Gu.PaftaBulucu.Business.Tests.Services
 {
     public class SheetServiceTest
     {
-        private readonly ISheetRepository _sheetRepository;
+        private readonly ISheetRepository _sheetRepository; 
+        private readonly Mock<IConfiguration> _configuration;
 
         public SheetServiceTest()
         {
-            _sheetRepository = new SheetRepository(new AmazonS3Client());
+            _configuration = new Mock<IConfiguration>();
+            _configuration.SetupGet(x => x[It.Is<string>(s => s == "BucketName")]).Returns("pafta.bulucu.dev");
+            _sheetRepository = new SheetRepository(new AmazonS3Client(), _configuration.Object);
         }
 
         [Theory]
