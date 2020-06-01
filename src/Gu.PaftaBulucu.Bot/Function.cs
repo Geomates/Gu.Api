@@ -5,11 +5,15 @@ using Gu.PaftaBulucu.Bot.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using System;
+using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
+using Amazon.S3;
 using Amazon.SimpleSystemsManagement;
 using Gu.PaftaBulucu.Business.Services;
+using Gu.PaftaBulucu.Data.Repositories;
+using Microsoft.Extensions.Configuration;
 
 
 [assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.SystemTextJson.DefaultLambdaJsonSerializer))]
@@ -62,6 +66,8 @@ namespace Gu.PaftaBulucu.Bot
 
         private void ConfigureServices(ServiceCollection services)
         {
+            var configuration = new ConfigurationBuilder().AddEnvironmentVariables().Build();
+
             services.AddAWSService<IAmazonDynamoDB>(new Amazon.Extensions.NETCore.Setup.AWSOptions()
             {
                 Region = Amazon.RegionEndpoint.EUWest1
@@ -70,9 +76,15 @@ namespace Gu.PaftaBulucu.Bot
             {
                 Region = Amazon.RegionEndpoint.EUWest1
             });
+            services.AddAWSService<IAmazonS3>(new Amazon.Extensions.NETCore.Setup.AWSOptions()
+            {
+                Region = Amazon.RegionEndpoint.EUWest1
+            });
+            services.AddSingleton<IConfiguration>(configuration);
             services.AddTransient<IBotService, BotService>();
             services.AddTransient<ITelegramService, TelegramService>();
             services.AddTransient<ISheetService, SheetService>();
+            services.AddTransient<ISheetRepository, SheetRepository>();
             services.AddTransient<IAmazonDynamoDbService, AmazonDynamoDbService>();
             services.AddTransient<IParameterService, ParameterService>();
         }

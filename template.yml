@@ -60,6 +60,7 @@ Resources:
             Environment:
                 Variables:
                     DYNAMODB_TABLE_NAME: PaftaBulucuTelegramQueries
+                    BucketName: pafta.bulucu
             Events:
                 ProxyApi:
                     Type: Api
