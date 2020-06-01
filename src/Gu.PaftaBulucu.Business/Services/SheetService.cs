@@ -1,5 +1,4 @@
 ﻿using Gu.PaftaBulucu.Business.Dtos;
-using Gu.PaftaBulucu.Data.Models;
 using Gu.PaftaBulucu.Data.Repositories;
 using System;
 using System.Collections.Generic;
@@ -12,16 +11,16 @@ namespace Gu.PaftaBulucu.Business.Services
     public class SheetService : ISheetService
     {
         private readonly ISheetRepository _sheetRepository;
-        private readonly Dictionary<int, int> _scaleRanges = new Dictionary<int, int>
+        private readonly Dictionary<int, (int lat, int lon)> _scaleRanges = new Dictionary<int, (int lat, int lon)>
         {
-            {100, 18000000},
-            {50, 9000000},
-            {25, 4500000},
-            {10, 1800000},
-            {5, 900000},
-            {2, 450000},
-            {1, 225000}
-
+            {250, (36000000, 54000000)},
+            {100, (18000000, 18000000)},
+            {50, (9000000, 9000000)},
+            {25, (4500000, 4500000)},
+            {10, (1800000, 1800000)},
+            {5, (900000, 900000)},
+            {2, (450000, 450000)},
+            {1, (225000, 225000)}
         };
 
         public SheetService(ISheetRepository sheetRepository)
@@ -35,7 +34,7 @@ namespace Gu.PaftaBulucu.Business.Services
             int lon = (int)(longitude * 36000000);
 
             //Coordinates are in the middle of four sheets
-            if (lat % _scaleRanges[scale] == 0 && lon % _scaleRanges[scale] == 0)
+            if (lat % _scaleRanges[scale].lat == 0 && lon % _scaleRanges[scale].lon == 0)
             {
                 return new[]
                 {
@@ -47,7 +46,7 @@ namespace Gu.PaftaBulucu.Business.Services
             }
 
             //Coordinates are somewhere in the middle of two sheets in a horizontal order
-            if (lat % _scaleRanges[scale] > 0 && lon % _scaleRanges[scale] == 0)
+            if (lat % _scaleRanges[scale].lat > 0 && lon % _scaleRanges[scale].lon == 0)
             {
                 return new[]
                     {
@@ -57,7 +56,7 @@ namespace Gu.PaftaBulucu.Business.Services
             }
 
             //Coordinates are somewhere in the middle of two sheets in a vertical order
-            if (lat % _scaleRanges[scale] == 0 && lon % _scaleRanges[scale] > 0)
+            if (lat % _scaleRanges[scale].lat == 0 && lon % _scaleRanges[scale].lon > 0)
             {
 
                 return new[]
@@ -97,7 +96,7 @@ namespace Gu.PaftaBulucu.Business.Services
             {
                 Lat = originSheet.Lat,
                 Lon = originSheet.Lon,
-                Name = originSheet.Name,
+                Name = name,
                 Scale = scale
             };
 
@@ -116,19 +115,19 @@ namespace Gu.PaftaBulucu.Business.Services
                         }
                         if (index < 3)
                         {
-                            result.Lat += _scaleRanges[sheetPart.Key];
+                            result.Lat += _scaleRanges[sheetPart.Key].lat;
                         }
                         if (index == 2 || index == 3)
                         {
-                            result.Lon += _scaleRanges[sheetPart.Key];
+                            result.Lon += _scaleRanges[sheetPart.Key].lon;
                         }
                         break;
                     case 10: //1:10.000
                         int.TryParse(sheetPart.Value, out int index10);
                         var x = index10 % 5 == 0 ? 4 : index10 % 5 - 1;
                         var y = 4 - index10 / 5 + (index10 % 5 == 0 ? 1 : 0);
-                        result.Lat += y * _scaleRanges[sheetPart.Key];
-                        result.Lon += x * _scaleRanges[sheetPart.Key];
+                        result.Lat += y * _scaleRanges[sheetPart.Key].lat;
+                        result.Lon += x * _scaleRanges[sheetPart.Key].lon;
                         break;
                 }
             }
@@ -171,10 +170,10 @@ namespace Gu.PaftaBulucu.Business.Services
             var matchedSheetParts = sheetNameRegex.Match(sheetName);
 
             var result = new Dictionary<int, string>();
-            var scales = new int[] { 250 }.Concat(_scaleRanges.Keys).ToArray();
+            var scales = _scaleRanges.Keys.ToArray();
             var matchedGroups = matchedSheetParts.Groups.Values.ToArray();
 
-            for (int i = 1; i < matchedGroups.Length; i++)
+            for (var i = 1; i < matchedGroups.Length; i++)
             {
                 if (matchedGroups[i].Value.Length > 0)
                 {
