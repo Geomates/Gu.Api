@@ -19,16 +19,18 @@ namespace Gu.PaftaBulucu.Data.Tests.Repositories
 
 
         [Theory]
-        [InlineData(1494000100, 1062000100, "İstanbul-E23")]
-        [InlineData(1296004000, 918000300, "Kalimnos-P15")]
-        public void FindSheet_100Scale(int lat, int lon, string sheetName)
+        [InlineData(1494000100, 1062000100, 250, "İstanbul")]
+        [InlineData(1494000100, 1062000100, 100, "İstanbul-E23")]
+        [InlineData(1296004000, 918000300, 100, "Kalimnos-P15")]
+        [InlineData(1296004000, 918000300, 250, "Kalimnos")]
+        public void FindSheet_100Scale(int lat, int lon, int scale, string sheetName)
         {
             var sheetRepository = new SheetRepository(new AmazonS3Client(new AmazonS3Config()
             {
                 RegionEndpoint = RegionEndpoint.EUWest1
             }), _configuration.Object);
 
-            var sheet = sheetRepository.FindByCoordinatesAndScale(lat, lon, 100);
+            var sheet = sheetRepository.FindByCoordinatesAndScale(lat, lon, scale);
 
             Assert.Equal(sheetName, sheet.Name);
         }

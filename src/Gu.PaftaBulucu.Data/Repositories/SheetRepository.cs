@@ -28,10 +28,13 @@ namespace Gu.PaftaBulucu.Data.Repositories
 
             switch (scale)
             {
+                case 250:
+                    range = 36000000;
+                    return FindByCoordinatesAndOffset(lat, lon, scale, range, range * 3 / 2);
                 case 100:
                     range = 36000000;
                     offset = range / 2;
-                    return FindByCoordinatesAndOffset(lat, lon, scale, offset);
+                    return FindByCoordinatesAndOffset(lat, lon, scale, offset, offset);
                 case 50:
                     range = 18000000;
                     offset = range / 2;
@@ -116,7 +119,7 @@ namespace Gu.PaftaBulucu.Data.Repositories
             };
         }
 
-        private Sheet FindByCoordinatesAndOffset(int lat, int lon, int scale, int offset)
+        private Sheet FindByCoordinatesAndOffset(int lat, int lon, int scale, int latOffset, int lonOffset)
         {
             var getResponse = _amazonS3.GetObjectAsync(new GetObjectRequest
             {
@@ -135,9 +138,9 @@ namespace Gu.PaftaBulucu.Data.Repositories
             }
 
             if (scale == 100)
-                return sheets.Sheets100.FirstOrDefault(s => lat > s.Lat && lat < s.Lat + offset && lon > s.Lon && lon < s.Lon + offset);
+                return sheets.Sheets100.FirstOrDefault(s => lat > s.Lat && lat < s.Lat + latOffset && lon > s.Lon && lon < s.Lon + lonOffset);
 
-            return sheets.Sheets250.FirstOrDefault(s => lat > s.Lat && lat < s.Lat + offset && lon > s.Lon && lon < s.Lon + offset);
+            return sheets.Sheets250.FirstOrDefault(s => lat > s.Lat && lat < s.Lat + latOffset && lon > s.Lon && lon < s.Lon + lonOffset);
         }
 
         public Sheet FindByNameAndScale(string name, int scale)
