@@ -22,7 +22,7 @@ namespace Gu.PaftaBulucu.Bot.Services
         {
             var response = await _amazonSimpleSystemsManagement.GetParameterAsync(new GetParameterRequest
             {
-                Name = "gu/bot/telegram/token"
+                Name = "/gu/bot/telegram/token"
             });
 
             return response?.Parameter?.Value;
