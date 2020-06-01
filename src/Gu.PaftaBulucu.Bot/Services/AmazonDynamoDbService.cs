@@ -47,7 +47,7 @@ namespace Gu.PaftaBulucu.Bot.Services
         {
             var queryRequest = new GetItemRequest(_tableName, new Dictionary<string, AttributeValue>
             {
-                { ":chatId",   new AttributeValue { N = chatId.ToString() } }
+                { "chatid",   new AttributeValue { N = chatId.ToString() } }
             });
 
             var response = await _amazonDynamoDb.GetItemAsync(queryRequest);
