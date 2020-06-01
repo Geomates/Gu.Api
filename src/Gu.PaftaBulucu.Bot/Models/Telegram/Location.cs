@@ -1,4 +1,4 @@
-﻿namespace Gu.PaftaBulucu.Bot.Models
+﻿namespace Gu.PaftaBulucu.Bot.Models.Telegram
 {
     public class Location
     {

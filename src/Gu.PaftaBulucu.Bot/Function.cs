@@ -1,23 +1,22 @@
+﻿using Amazon.Lambda.APIGatewayEvents;
+using Amazon.Lambda.Core;
+using Gu.PaftaBulucu.Bot.Models;
+using Gu.PaftaBulucu.Bot.Services;
+using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Amazon.DynamoDBv2;
+using Amazon.SimpleSystemsManagement;
 
-using Amazon.Lambda.Core;
-using Amazon.Lambda.APIGatewayEvents;
-using Gu.PaftaBulucu.Bot.Models;
-using Newtonsoft.Json;
 
-// Assembly attribute to enable the Lambda function's JSON input to be converted into a .NET class.
 [assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.SystemTextJson.DefaultLambdaJsonSerializer))]
-
 namespace Gu.PaftaBulucu.Bot
 {
-    public class Functions
+    public class Function
     {
-
-        public APIGatewayProxyResponse FunctionHandler(APIGatewayProxyRequest request, ILambdaContext context)
+        public async Task<APIGatewayProxyResponse> FunctionHandlerAsync(APIGatewayProxyRequest request, ILambdaContext context)
         {
             LambdaLogger.Log(request.Body);
 
@@ -42,33 +41,38 @@ namespace Gu.PaftaBulucu.Bot
                 return response;
             }
 
+            var serviceCollection = new ServiceCollection();
+            ConfigureServices(serviceCollection);
+            var serviceProvider = serviceCollection.BuildServiceProvider();
+            var botService = serviceProvider.GetService<IBotService>();
+
             if (webhookMessage.Message?.Location != null)
             {
-                await botService.SetLocationAsync(webhookMessage.Message.Chat.Id, webhookMessage.Message.Location);
+                await botService.AskScaleAsync(webhookMessage.Message.Chat.Id, webhookMessage.Message.Location);
             }
 
-            if (webhookMessage.CallbackQuery != null)
+            if (webhookMessage.CallbackQuery != null && webhookMessage.CallbackQuery.Message.Text == "Pafta ölçeğini seçiniz:" && int.TryParse(webhookMessage.CallbackQuery.Data, out int scale))
             {
-
-                switch (webhookMessage.CallbackQuery.Message.Text)
-                {
-                    case BotDialog.ASK_MAGNITUDE:
-                        if (double.TryParse(webhookMessage.CallbackQuery.Data, out double magnitude))
-                        {
-                            await botService.SetMagnitudeAsync(webhookMessage.CallbackQuery.Message.MessageId, webhookMessage.CallbackQuery.Id, webhookMessage.CallbackQuery.Message.Chat.Id, magnitude);
-                        }
-                        break;
-                }
+                await botService.QuerySheetAsync(webhookMessage.CallbackQuery.Message.MessageId, webhookMessage.CallbackQuery.Id, webhookMessage.CallbackQuery.Message.Chat.Id, scale);
             }
-
-            //var response = new APIGatewayProxyResponse
-            //{
-            //    StatusCode = (int)HttpStatusCode.OK,
-            //    Body = "Hello AWS Serverless",
-            //    Headers = new Dictionary<string, string> { { "Content-Type", "text/plain" } }
-            //};
 
             return response;
+        }
+
+        private void ConfigureServices(ServiceCollection services)
+        {
+            services.AddAWSService<IAmazonDynamoDB>(new Amazon.Extensions.NETCore.Setup.AWSOptions()
+            {
+                Region = Amazon.RegionEndpoint.EUWest1
+            });
+            services.AddAWSService<IAmazonSimpleSystemsManagement>(new Amazon.Extensions.NETCore.Setup.AWSOptions()
+            {
+                Region = Amazon.RegionEndpoint.EUWest1
+            });
+            services.AddTransient<IBotService, BotService>();
+            services.AddTransient<ITelegramService, TelegramService>();
+            services.AddTransient<IAmazonDynamoDbService, AmazonDynamoDbService>();
+            services.AddTransient<IParameterService, ParameterService>();
         }
     }
 }

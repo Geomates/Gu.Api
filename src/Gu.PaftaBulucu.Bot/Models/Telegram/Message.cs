@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
-namespace Gu.PaftaBulucu.Bot.Models
+namespace Gu.PaftaBulucu.Bot.Models.Telegram
 {
     public class Message
     {

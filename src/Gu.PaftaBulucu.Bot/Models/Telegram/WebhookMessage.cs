@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Gu.PaftaBulucu.Bot.Models.Telegram;
 using Newtonsoft.Json;
 
 namespace Gu.PaftaBulucu.Bot.Models
 {
-    class WebhookMessage
+    public class WebhookMessage
     {
         [JsonProperty("message")]
         public Message Message { get; set; }
