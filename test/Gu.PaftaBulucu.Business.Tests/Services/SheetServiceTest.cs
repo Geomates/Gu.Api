@@ -21,7 +21,6 @@ namespace Gu.PaftaBulucu.Business.Tests.Services
         }
 
         [Theory]
-        [InlineData(50, 20, 100, null, 1)]
         [InlineData(37.0000028, 41.5000028, 100, "Mardin-N47", 1)]
         [InlineData(37, 41.5, 100, "Mardin-N46,Mardin-N47,Hasec-O47,Hasec-O46", 4)]
         [InlineData(37, 41.5000028, 100, "Mardin-N47,Hasec-O47", 2)]
