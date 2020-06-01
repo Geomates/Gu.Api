@@ -95,7 +95,7 @@ namespace Gu.PaftaBulucu.Bot.Services
             };
             await _telegramService.DeleteMessage(deleteMessage);
 
-            var messageText = "Arama sonucu: ";
+            var messageText = $"Arama sonucu (1:{scale}.000): ";
 
             if (sheets.Count() > 1)
             {
