@@ -28,6 +28,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Files", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gu.ApiGateway.CustomAuthorizer", "src\Gu.ApiGateway.CustomAuthorizer\Gu.ApiGateway.CustomAuthorizer.csproj", "{6E78977F-3709-48C2-A0B8-F9EA6AB952CD}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gu.PaftaBulucu.Bot", "src\Gu.PaftaBulucu.Bot\Gu.PaftaBulucu.Bot.csproj", "{23452E5E-DC65-43CF-ACE0-688FDCBA61CF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -62,6 +64,10 @@ Global
 		{6E78977F-3709-48C2-A0B8-F9EA6AB952CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6E78977F-3709-48C2-A0B8-F9EA6AB952CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6E78977F-3709-48C2-A0B8-F9EA6AB952CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{23452E5E-DC65-43CF-ACE0-688FDCBA61CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{23452E5E-DC65-43CF-ACE0-688FDCBA61CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{23452E5E-DC65-43CF-ACE0-688FDCBA61CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{23452E5E-DC65-43CF-ACE0-688FDCBA61CF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

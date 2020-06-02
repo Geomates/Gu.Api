@@ -23,6 +23,13 @@ Resources:
                 AllowHeaders: "'*'"
                 AllowOrigin: "'*'"
 
+    PaftaBulucuTelegramApi:
+        Type: AWS::Serverless::Api
+        Properties:
+            OpenApiVersion: '2.0'
+            Name: PaftaBulucuTelegramApi
+            StageName: prod
+
     GuAuth0CustomAuthorizer:
         Type: AWS::Serverless::Function
         Properties:
@@ -39,10 +46,33 @@ Resources:
                     VALID_AUDIENCE: https://api.geomatikuygulamalar.com
                     METADATA_ADDRESS: https://geomatik.eu.auth0.com/.well-known/openid-configuration
 
-    PaftaBulucuFunction:
+    PaftaBulucuBotFunction:
         Type: 'AWS::Serverless::Function'
         Properties:
-            FunctionName: PaftaBulucuFunction
+            FunctionName: PaftaBulucuBotFunction
+            Handler: Gu.PaftaBulucu.Bot::Gu.PaftaBulucu.Bot.Function::FunctionHandlerAsync
+            Runtime: dotnetcore3.1
+            CodeUri: ./src/Gu.PaftaBulucu.Bot/
+            Description: Provide Telegram bot for sheet queries
+            MemorySize: 256
+            Timeout: 30
+            Role: arn:aws:iam::065627307699:role/GuPaftaBulucuLambdaFunctionRole
+            Environment:
+                Variables:
+                    DYNAMODB_TABLE_NAME: PaftaBulucuTelegramQueries
+                    BucketName: pafta.bulucu
+            Events:
+                ProxyApi:
+                    Type: Api
+                    Properties:
+                        RestApiId: !Ref PaftaBulucuTelegramApi
+                        Path: /
+                        Method: POST
+
+    PaftaBulucuApiFunction:
+        Type: 'AWS::Serverless::Function'
+        Properties:
+            FunctionName: PaftaBulucuApiFunction
             Handler: Gu.PaftaBulucu.WebApi::Gu.PaftaBulucu.WebApi.LambdaEntryPoint::FunctionHandlerAsync
             Runtime: dotnetcore3.1
             CodeUri: ./src/Gu.PaftaBulucu.WebApi/
