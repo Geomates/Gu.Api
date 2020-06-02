@@ -12,6 +12,7 @@ namespace Gu.PaftaBulucu.Bot.Services
     {
         Task<bool> SendMessage(TelegramMessage message);
         Task<bool> DeleteMessage(TelegramDeleteMessage telegramDeleteMessage);
+        Task<bool> AnswerCallbackQuery(AnswerCallbackQuery answerCallbackQuery);
     }
 
     public class TelegramService : ITelegramService
@@ -60,6 +61,27 @@ namespace Gu.PaftaBulucu.Bot.Services
                 throw new TelegramApiException(await response.Content.ReadAsStringAsync());
             }
             return true;
+        }
+
+        public async Task<bool> AnswerCallbackQuery(AnswerCallbackQuery answerCallbackQuery)
+        {
+            var apiToken = await _parameterService.GetTelegramToken();
+
+            var url = $"{TelegramApiUrl}/bot{apiToken}/answerCallbackQuery";
+            var content = new StringContent(JsonConvert.SerializeObject(answerCallbackQuery, new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore
+            }), Encoding.UTF8, "application/json");
+
+            using (HttpClient client = new HttpClient())
+            using (HttpResponseMessage response = await client.PostAsync(url, content))
+            {
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new Exception(await response.Content.ReadAsStringAsync());
+                }
+                return true;
+            }
         }
     }
 }

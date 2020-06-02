@@ -12,6 +12,7 @@ namespace Gu.PaftaBulucu.Bot.Services
     public class ParameterService : IParameterService
     {
         private readonly IAmazonSimpleSystemsManagement _amazonSimpleSystemsManagement;
+        private string _telegramToken;
 
         public ParameterService(IAmazonSimpleSystemsManagement amazonSimpleSystemsManagement)
         {
@@ -20,12 +21,17 @@ namespace Gu.PaftaBulucu.Bot.Services
 
         public async Task<string> GetTelegramToken()
         {
+            if (!string.IsNullOrEmpty(_telegramToken))
+                return _telegramToken;
+
             var response = await _amazonSimpleSystemsManagement.GetParameterAsync(new GetParameterRequest
             {
                 Name = "/gu/bot/telegram/token"
             });
 
-            return response?.Parameter?.Value;
+            _telegramToken = response?.Parameter?.Value;
+
+            return _telegramToken;
         }
     }
 }
