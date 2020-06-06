@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -60,7 +61,11 @@ namespace Gu.MailChimp.Api
             return new APIGatewayProxyResponse
             {
                 StatusCode = (int)statusCode,
-                Body = message
+                Body = message,
+                Headers = new Dictionary<string, string>
+                {
+                    { "Access-Control-Allow-Origin", "*" }
+                }
             };
         }
 
