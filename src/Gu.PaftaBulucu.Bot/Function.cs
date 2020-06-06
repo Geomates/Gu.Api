@@ -83,7 +83,6 @@ namespace Gu.PaftaBulucu.Bot
             services.AddTransient<ISheetService, SheetService>();
             services.AddTransient<ISheetRepository, SheetRepository>();
             services.AddTransient<IAmazonDynamoDbService, AmazonDynamoDbService>();
-            services.AddTransient<IParameterService, ParameterService>();
         }
     }
 }
