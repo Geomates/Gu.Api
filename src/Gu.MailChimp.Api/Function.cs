@@ -71,6 +71,7 @@ namespace Gu.MailChimp.Api
             {
                 Region = Amazon.RegionEndpoint.EUWest1
             });
+            services.AddLogging();
             services.AddSingleton<IConfiguration>(configuration);
             services.AddTransient<IMailChimpService, MailChimpService>();
         }
