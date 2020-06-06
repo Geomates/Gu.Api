@@ -73,15 +73,13 @@ namespace Gu.PaftaBulucu.Bot.Services
                 NullValueHandling = NullValueHandling.Ignore
             }), Encoding.UTF8, "application/json");
 
-            using (HttpClient client = new HttpClient())
-            using (HttpResponseMessage response = await client.PostAsync(url, content))
+            using HttpClient client = new HttpClient();
+            using HttpResponseMessage response = await client.PostAsync(url, content);
+            if (!response.IsSuccessStatusCode)
             {
-                if (!response.IsSuccessStatusCode)
-                {
-                    throw new Exception(await response.Content.ReadAsStringAsync());
-                }
-                return true;
+                throw new Exception(await response.Content.ReadAsStringAsync());
             }
+            return true;
         }
     }
 }

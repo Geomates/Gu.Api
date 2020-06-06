@@ -40,6 +40,7 @@ namespace Gu.PaftaBulucu.WebApi
 
             services.AddTransient<ISheetService, SheetService>();
             services.AddTransient<IProjectService, ProjectService>();
+            services.AddTransient<IMailChimpService, MailChimpService>();
             services.AddTransient<ISheetRepository, SheetRepository>();
             services.AddScoped<IDatabaseRepository<Project>, ProjectRepository>();
         }
