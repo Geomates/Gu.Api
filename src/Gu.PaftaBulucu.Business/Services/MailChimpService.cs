@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using Gu.PaftaBulucu.Business.Dtos;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
@@ -14,25 +15,22 @@ namespace Gu.PaftaBulucu.Business.Services
     {
         private readonly ILogger<MailChimpService> _logger;
         private readonly string _apiKey;
-        private readonly string _listId;
-        private readonly string _baseUrl;
+        private const string BaseUrl = "https://us2.api.mailchimp.com/3.0/";
 
         public MailChimpService(IConfiguration configuration, ILogger<MailChimpService> logger)
         {
             _logger = logger;
             _apiKey = configuration["MailChimp:ApiKey"];
-            _listId = configuration["MailChimp:ListId"];
-            _baseUrl = configuration["MailChimp:BaseUrl"];
         }
 
-        public async Task<bool> AddMemberAsync(string email)
+        public async Task<bool> AddMemberAsync(AddSubscriberDto addSubscriberDto)
         {
             using (var httpClient = new HttpClient())
             {
-                var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"{_baseUrl}/lists/{_listId}/members");
+                var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"{BaseUrl}/lists/{addSubscriberDto.ListId}/members");
                 var byteArray = Encoding.ASCII.GetBytes($"apikey:{_apiKey}");
                 requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
-                requestMessage.Content = new StringContent("{\"email_address\":\"" + email + "\",\"status\":\"subscribed\"}");
+                requestMessage.Content = new StringContent("{\"email_address\":\"" + addSubscriberDto.Email + "\",\"status\":\"subscribed\"}");
 
                 var response =  await httpClient.SendAsync(requestMessage);
                 if (response.IsSuccessStatusCode)

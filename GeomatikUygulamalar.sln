@@ -30,6 +30,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gu.ApiGateway.CustomAuthori
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gu.PaftaBulucu.Bot", "src\Gu.PaftaBulucu.Bot\Gu.PaftaBulucu.Bot.csproj", "{23452E5E-DC65-43CF-ACE0-688FDCBA61CF}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gu.MailChimp.Api", "src\Gu.MailChimp.Api\Gu.MailChimp.Api.csproj", "{04115FA7-276F-45E9-BA20-ACD942C656C5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -68,6 +70,10 @@ Global
 		{23452E5E-DC65-43CF-ACE0-688FDCBA61CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{23452E5E-DC65-43CF-ACE0-688FDCBA61CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{23452E5E-DC65-43CF-ACE0-688FDCBA61CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{04115FA7-276F-45E9-BA20-ACD942C656C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04115FA7-276F-45E9-BA20-ACD942C656C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04115FA7-276F-45E9-BA20-ACD942C656C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04115FA7-276F-45E9-BA20-ACD942C656C5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
