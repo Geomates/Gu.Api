@@ -65,9 +65,11 @@ Resources:
                 ProxyApi:
                     Type: Api
                     Properties:
-                        RestApiId: !Ref PaftaBulucuTelegramApi
-                        Path: /
+                        RestApiId: !Ref PaftaBulucuApi
+                        Path: /telegram/bot
                         Method: POST
+                        Auth:
+                            Authorizer: NONE
 
     PaftaBulucuApiFunction:
         Type: 'AWS::Serverless::Function'
