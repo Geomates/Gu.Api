@@ -23,12 +23,16 @@ Resources:
                 AllowHeaders: "'*'"
                 AllowOrigin: "'*'"
 
-    PaftaBulucuTelegramApi:
+    GuMailChimpApi:
         Type: AWS::Serverless::Api
         Properties:
             OpenApiVersion: '2.0'
-            Name: PaftaBulucuTelegramApi
+            Name: GuMailChimpApi
             StageName: prod
+            Cors: 
+                AllowMethods: "'*'"
+                AllowHeaders: "'*'"
+                AllowOrigin: "'*'"
 
     GuAuth0CustomAuthorizer:
         Type: AWS::Serverless::Function
@@ -59,13 +63,34 @@ Resources:
             Role: arn:aws:iam::065627307699:role/GuPaftaBulucuLambdaFunctionRole
             Environment:
                 Variables:
-                    DYNAMODB_TABLE_NAME: PaftaBulucuTelegramQueries
+                    DynamoDbTableName: PaftaBulucuTelegramQueries
                     BucketName: pafta.bulucu
             Events:
                 ProxyApi:
                     Type: Api
                     Properties:
-                        RestApiId: !Ref PaftaBulucuTelegramApi
+                        RestApiId: !Ref PaftaBulucuApi
+                        Path: /telegram/bot
+                        Method: POST
+                        Auth:
+                            Authorizer: NONE
+
+    GuMailChimpApiFunction:
+        Type: 'AWS::Serverless::Function'
+        Properties:
+            FunctionName: GuMailChimpApiFunction
+            Handler: Gu.MailChimp.Api::Gu.MailChimp.Api.Function::FunctionHandlerAsync
+            Runtime: dotnetcore3.1
+            CodeUri: ./src/Gu.MailChimp.Api/
+            Description: Provide API for MailChimp subscriptions
+            MemorySize: 256
+            Timeout: 30
+            Role: arn:aws:iam::065627307699:role/GuMailChimpApiLambdaFunctionRole
+            Events:
+                ProxyApi:
+                    Type: Api
+                    Properties:
+                        RestApiId: !Ref GuMailChimpApi
                         Path: /
                         Method: POST
 

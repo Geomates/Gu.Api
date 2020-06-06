@@ -3,6 +3,7 @@ using Amazon.DynamoDBv2.Model;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace Gu.PaftaBulucu.Bot.Services
 {
@@ -14,15 +15,13 @@ namespace Gu.PaftaBulucu.Bot.Services
 
     public class AmazonDynamoDbService : IAmazonDynamoDbService
     {
-        private const string TABLE_NAME = "DYNAMODB_TABLE_NAME";
-
         private readonly IAmazonDynamoDB _amazonDynamoDb;
         private readonly string _tableName;
 
-        public AmazonDynamoDbService(IAmazonDynamoDB amazonDynamoDb)
+        public AmazonDynamoDbService(IAmazonDynamoDB amazonDynamoDb, IConfiguration configuration)
         {
             _amazonDynamoDb = amazonDynamoDb;
-            _tableName = Environment.GetEnvironmentVariable(TABLE_NAME);
+            _tableName = configuration["DynamoDbTableName"];
         }
 
         public async Task<bool> UpdateAsync(int chatId, double lat, double lon)

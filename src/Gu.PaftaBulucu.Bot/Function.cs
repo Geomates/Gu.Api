@@ -1,19 +1,18 @@
-﻿using Amazon.Lambda.APIGatewayEvents;
+﻿using Amazon.DynamoDBv2;
+using Amazon.Lambda.APIGatewayEvents;
 using Amazon.Lambda.Core;
-using Gu.PaftaBulucu.Bot.Models;
-using Gu.PaftaBulucu.Bot.Services;
-using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
-using System;
-using System.IO;
-using System.Net;
-using System.Threading.Tasks;
-using Amazon.DynamoDBv2;
 using Amazon.S3;
 using Amazon.SimpleSystemsManagement;
+using Gu.PaftaBulucu.Bot.Models;
+using Gu.PaftaBulucu.Bot.Services;
 using Gu.PaftaBulucu.Business.Services;
 using Gu.PaftaBulucu.Data.Repositories;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+using System;
+using System.Net;
+using System.Threading.Tasks;
 
 
 [assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.SystemTextJson.DefaultLambdaJsonSerializer))]
@@ -64,7 +63,7 @@ namespace Gu.PaftaBulucu.Bot
 
         private void ConfigureServices(ServiceCollection services)
         {
-            var configuration = new ConfigurationBuilder().AddEnvironmentVariables().Build();
+            var configuration = new ConfigurationBuilder().AddEnvironmentVariables().AddSystemsManager("/gu/bot/").Build();
 
             services.AddAWSService<IAmazonDynamoDB>(new Amazon.Extensions.NETCore.Setup.AWSOptions()
             {
@@ -84,7 +83,6 @@ namespace Gu.PaftaBulucu.Bot
             services.AddTransient<ISheetService, SheetService>();
             services.AddTransient<ISheetRepository, SheetRepository>();
             services.AddTransient<IAmazonDynamoDbService, AmazonDynamoDbService>();
-            services.AddTransient<IParameterService, ParameterService>();
         }
     }
 }

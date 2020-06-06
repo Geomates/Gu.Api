@@ -1,5 +1,6 @@
 ﻿using Gu.PaftaBulucu.Bot.Exceptions;
 using Gu.PaftaBulucu.Bot.Models.Telegram;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
 using System.Net.Http;
@@ -17,19 +18,17 @@ namespace Gu.PaftaBulucu.Bot.Services
 
     public class TelegramService : ITelegramService
     {
-        private readonly IParameterService _parameterService;
+        private readonly string _apiToken;
         private const string TelegramApiUrl = "https://api.telegram.org";
 
-        public TelegramService(IParameterService parameterService)
+        public TelegramService(IConfiguration configuration)
         {
-            _parameterService = parameterService;
+            _apiToken = configuration["Telegram:Token"];
         }
 
         public async Task<bool> DeleteMessage(TelegramDeleteMessage telegramDeleteMessage)
         {
-            var apiToken = await  _parameterService.GetTelegramToken();
-
-            var url = $"{TelegramApiUrl}/bot{apiToken}/deleteMessage";
+            var url = $"{TelegramApiUrl}/bot{_apiToken}/deleteMessage";
             var content = new StringContent(JsonConvert.SerializeObject(telegramDeleteMessage, new JsonSerializerSettings
             {
                 NullValueHandling = NullValueHandling.Ignore
@@ -46,9 +45,7 @@ namespace Gu.PaftaBulucu.Bot.Services
 
         public async Task<bool> SendMessage(TelegramMessage message)
         {
-            var apiToken = await _parameterService.GetTelegramToken();
-
-            var url = $"{TelegramApiUrl}/bot{apiToken}/sendMessage";
+            var url = $"{TelegramApiUrl}/bot{_apiToken}/sendMessage";
             var content = new StringContent(JsonConvert.SerializeObject(message, new JsonSerializerSettings
             {
                 NullValueHandling = NullValueHandling.Ignore
@@ -65,23 +62,19 @@ namespace Gu.PaftaBulucu.Bot.Services
 
         public async Task<bool> AnswerCallbackQuery(AnswerCallbackQuery answerCallbackQuery)
         {
-            var apiToken = await _parameterService.GetTelegramToken();
-
-            var url = $"{TelegramApiUrl}/bot{apiToken}/answerCallbackQuery";
+            var url = $"{TelegramApiUrl}/bot{_apiToken}/answerCallbackQuery";
             var content = new StringContent(JsonConvert.SerializeObject(answerCallbackQuery, new JsonSerializerSettings
             {
                 NullValueHandling = NullValueHandling.Ignore
             }), Encoding.UTF8, "application/json");
 
-            using (HttpClient client = new HttpClient())
-            using (HttpResponseMessage response = await client.PostAsync(url, content))
+            using HttpClient client = new HttpClient();
+            using HttpResponseMessage response = await client.PostAsync(url, content);
+            if (!response.IsSuccessStatusCode)
             {
-                if (!response.IsSuccessStatusCode)
-                {
-                    throw new Exception(await response.Content.ReadAsStringAsync());
-                }
-                return true;
+                throw new Exception(await response.Content.ReadAsStringAsync());
             }
+            return true;
         }
     }
 }
