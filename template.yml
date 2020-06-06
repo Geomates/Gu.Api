@@ -23,13 +23,6 @@ Resources:
                 AllowHeaders: "'*'"
                 AllowOrigin: "'*'"
 
-    PaftaBulucuTelegramApi:
-        Type: AWS::Serverless::Api
-        Properties:
-            OpenApiVersion: '2.0'
-            Name: PaftaBulucuTelegramApi
-            StageName: prod
-
     GuAuth0CustomAuthorizer:
         Type: AWS::Serverless::Function
         Properties:
