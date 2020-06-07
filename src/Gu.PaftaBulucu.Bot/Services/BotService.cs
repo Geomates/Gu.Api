@@ -123,7 +123,7 @@ namespace Gu.PaftaBulucu.Bot.Services
             var message = new TelegramMessage
             {
                 ChatId = chatId.ToString(),
-                Text = HttpUtility.UrlEncode(messageText)
+                Text = messageText
             };
 
             return await _telegramService.SendMessage(message);
