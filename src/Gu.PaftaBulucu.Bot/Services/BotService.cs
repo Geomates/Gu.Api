@@ -2,9 +2,9 @@
 using Gu.PaftaBulucu.Business.Services;
 using Newtonsoft.Json;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Linq;
-using Gu.PaftaBulucu.Bot.Models;
+using System.Threading.Tasks;
+using System.Web;
 
 namespace Gu.PaftaBulucu.Bot.Services
 {
@@ -81,7 +81,7 @@ namespace Gu.PaftaBulucu.Bot.Services
         {
             var coordinates = await _amazonDynamoDbService.QueryAsync(chatId);
 
-            var sheets = _sheetService.GetSheetsByCoordinate(coordinates.lat, coordinates.lon, scale);
+            var sheets = _sheetService.GetSheetsByCoordinate(coordinates.lat, coordinates.lon, scale).ToList();
 
             if (!sheets.Any())
             {
@@ -118,10 +118,12 @@ namespace Gu.PaftaBulucu.Bot.Services
                 messageText += sheets.FirstOrDefault().Name;
             }
 
+            messageText += $"\nKoordinatlar: ({coordinates.lat:F6}, {coordinates.lon:F6})";
+
             var message = new TelegramMessage
             {
                 ChatId = chatId.ToString(),
-                Text = messageText
+                Text = HttpUtility.UrlEncode(messageText)
             };
 
             return await _telegramService.SendMessage(message);

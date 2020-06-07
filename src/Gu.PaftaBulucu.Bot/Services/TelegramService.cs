@@ -36,11 +36,7 @@ namespace Gu.PaftaBulucu.Bot.Services
 
             using var client = new HttpClient();
             using var response = await client.PostAsync(url, content);
-            if (!response.IsSuccessStatusCode)
-            {
-                throw new Exception(await response.Content.ReadAsStringAsync());
-            }
-            return true;
+            return response.IsSuccessStatusCode;
         }
 
         public async Task<bool> SendMessage(TelegramMessage message)
