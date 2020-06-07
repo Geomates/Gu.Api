@@ -103,11 +103,10 @@ namespace Gu.PaftaBulucu.Bot.Services
 
             await _telegramService.AnswerCallbackQuery(answerCallbackQuery);
 
-            var messageText = $"Arama sonucu (1:{scale}.000): ";
-
+            string messageText;
             if (sheets.Count() > 1)
             {
-                messageText = "\nBirden fazla pafta ile kesişiyor:\n";
+                messageText = "Birden fazla pafta ile kesişiyor:";
                 foreach (var sheetDto in sheets)
                 {
                     messageText += "\n" + sheetDto.Name;
@@ -115,10 +114,11 @@ namespace Gu.PaftaBulucu.Bot.Services
             }
             else
             {
-                messageText += sheets.FirstOrDefault().Name;
+                messageText = sheets.FirstOrDefault().Name;
             }
 
-            messageText += $"\nKoordinatlar: ({coordinates.lat:F6}, {coordinates.lon:F6})";
+            messageText += $"\nÖlçek: 1:{scale}.000";
+            messageText += $"\nKoordinatlar: {coordinates.lat:F6}, {coordinates.lon:F6}";
 
             var message = new TelegramMessage
             {
