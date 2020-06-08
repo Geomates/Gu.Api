@@ -2,9 +2,9 @@
 using Gu.PaftaBulucu.Business.Services;
 using Newtonsoft.Json;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Linq;
-using Gu.PaftaBulucu.Bot.Models;
+using System.Threading.Tasks;
+using System.Web;
 
 namespace Gu.PaftaBulucu.Bot.Services
 {
@@ -81,7 +81,7 @@ namespace Gu.PaftaBulucu.Bot.Services
         {
             var coordinates = await _amazonDynamoDbService.QueryAsync(chatId);
 
-            var sheets = _sheetService.GetSheetsByCoordinate(coordinates.lat, coordinates.lon, scale);
+            var sheets = _sheetService.GetSheetsByCoordinate(coordinates.lat, coordinates.lon, scale).ToList();
 
             if (!sheets.Any())
             {
@@ -103,11 +103,10 @@ namespace Gu.PaftaBulucu.Bot.Services
 
             await _telegramService.AnswerCallbackQuery(answerCallbackQuery);
 
-            var messageText = $"Arama sonucu (1:{scale}.000): ";
-
+            string messageText;
             if (sheets.Count() > 1)
             {
-                messageText = "\nBirden fazla pafta ile kesişiyor:\n";
+                messageText = "Birden fazla pafta ile kesişiyor:";
                 foreach (var sheetDto in sheets)
                 {
                     messageText += "\n" + sheetDto.Name;
@@ -115,8 +114,11 @@ namespace Gu.PaftaBulucu.Bot.Services
             }
             else
             {
-                messageText += sheets.FirstOrDefault().Name;
+                messageText = sheets.FirstOrDefault().Name;
             }
+
+            messageText += $"\nÖlçek: 1:{scale}.000";
+            messageText += $"\nKoordinatlar: {coordinates.lat:F6}, {coordinates.lon:F6}";
 
             var message = new TelegramMessage
             {
