@@ -1,7 +1,7 @@
 {
   "region": "eu-west-1",
   "configuration": "Release",
-  "framework": "netcoreapp3.1",
+  "framework": "dotnet6",
   "stack-name": "gu-api-stack",
   "s3-bucket": "gu-api-deployments",
   "template": "template.yml"

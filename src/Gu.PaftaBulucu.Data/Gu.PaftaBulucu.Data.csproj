@@ -8,7 +8,7 @@
   <ItemGroup>
     <PackageReference Include="AWSSDK.S3" Version="3.7.304.13" />
     <PackageReference Include="EFCore.NamingConventions" Version="7.0.2" />
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.11" />
-    <PackageReference Include="Npgsql.Json.NET" Version="7.0.6" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.22" />
+    <PackageReference Include="Npgsql.Json.NET" Version="6.0.10" />
   </ItemGroup>
 </Project>
