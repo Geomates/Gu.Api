@@ -40,7 +40,7 @@ Resources:
             FunctionName: GuAuth0CustomAuthorizer
             CodeUri: ./src/Gu.ApiGateway.CustomAuthorizer/
             Handler: Gu.ApiGateway.CustomAuthorizer::Gu.ApiGateway.CustomAuthorizer.Function::FunctionHandlerAsync
-            Runtime: dotnetcore3.1
+            Runtime: dotnet6
             MemorySize: 256
             Timeout: 30
             Role: arn:aws:iam::065627307699:role/GuApiCustomAuthorizerLambdaFunctionRole
@@ -55,7 +55,7 @@ Resources:
         Properties:
             FunctionName: PaftaBulucuBotFunction
             Handler: Gu.PaftaBulucu.Bot::Gu.PaftaBulucu.Bot.Function::FunctionHandlerAsync
-            Runtime: dotnetcore3.1
+            Runtime: dotnet6
             CodeUri: ./src/Gu.PaftaBulucu.Bot/
             Description: Provide Telegram bot for sheet queries
             MemorySize: 256
@@ -80,7 +80,7 @@ Resources:
         Properties:
             FunctionName: GuMailChimpApiFunction
             Handler: Gu.MailChimp.Api::Gu.MailChimp.Api.Function::FunctionHandlerAsync
-            Runtime: dotnetcore3.1
+            Runtime: dotnet6
             CodeUri: ./src/Gu.MailChimp.Api/
             Description: Provide API for MailChimp subscriptions
             MemorySize: 256
@@ -99,7 +99,7 @@ Resources:
         Properties:
             FunctionName: PaftaBulucuApiFunction
             Handler: Gu.PaftaBulucu.WebApi::Gu.PaftaBulucu.WebApi.LambdaEntryPoint::FunctionHandlerAsync
-            Runtime: dotnetcore3.1
+            Runtime: dotnet6
             CodeUri: ./src/Gu.PaftaBulucu.WebApi/
             Description: Provide set of endpoints to find sheet name based on coordinates or get sheet's boundries based on sheet name.
             MemorySize: 256
