@@ -1,9 +1,8 @@
-﻿using System;
-using System.Threading.Tasks;
-using Gu.PaftaBulucu.Business.Dtos;
+﻿using Gu.PaftaBulucu.Business.Dtos;
 using Gu.PaftaBulucu.Business.Services;
 using Gu.PaftaBulucu.WebApi.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace Gu.PaftaBulucu.WebApi.Controllers
 {

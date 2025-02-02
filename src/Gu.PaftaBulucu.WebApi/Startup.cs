@@ -1,16 +1,10 @@
 ﻿using Gu.PaftaBulucu.Business.Services;
-using Gu.PaftaBulucu.Data;
-using Gu.PaftaBulucu.Data.Models;
 using Gu.PaftaBulucu.Data.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
-using Npgsql;
 
 namespace Gu.PaftaBulucu.WebApi
 {
@@ -30,18 +24,12 @@ namespace Gu.PaftaBulucu.WebApi
             services.AddControllers();
 
             services.AddAWSService<Amazon.S3.IAmazonS3>();
-
-            services.AddDbContext<GuDbContext>(options => options.UseNpgsql(Configuration["postgres:connectionString"]).UseSnakeCaseNamingConvention());
-
-            NpgsqlConnection.GlobalTypeMapper.UseJsonNet(settings: new JsonSerializerSettings
-            {
-                ContractResolver = new CamelCasePropertyNamesContractResolver()
-            });
+            services.AddAWSService<Amazon.DynamoDBv2.IAmazonDynamoDB>();
 
             services.AddTransient<ISheetService, SheetService>();
             services.AddTransient<IProjectService, ProjectService>();
             services.AddTransient<ISheetRepository, SheetRepository>();
-            services.AddScoped<IDatabaseRepository<Project>, ProjectRepository>();
+            services.AddScoped<IProjectRepository, ProjectRepository>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
